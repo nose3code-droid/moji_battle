@@ -1,16 +1,19 @@
 import * as opentype from 'opentype';
 import { FONT_URL } from '../../config.js';
 import { makeCharacter, SPECIALS, STAT_KEYS, STAT_NAMES, STAT_MAX } from './stats.js';
-import { createBattle, nextActor, act, cpuChoose, winner, unit, alive, specialReady, specialNeedsTarget } from './battle.js';
+import { createBattle, nextActor, act, cpuChoose, winner, unit, alive, specialReady } from './battle.js';
 
 const TEAM_MAX = 3;
 const PRESETS = Array.from('〇あ木鬱一SiB龍米');
 const CPU_POOL = Array.from('〇のあ木山龍田S@Oろるぬめ米水火風日月永花ゆ一！i8%小大口W');
 const SLOW = new URLSearchParams(location.search).has('fast') ? 0.15 : 1; // ?fast で演出を速く（動作確認用）
+const SPEED_KEY = 'moji_status.speed';
 const COLORS = { p: '#2b7de9', e: '#e5484d' };
 
 const $ = id => document.getElementById(id);
-const wait = ms => new Promise(r => setTimeout(r, ms * SLOW));
+const SPEEDS = [1, 2, 4];   // バトルの はやおくり倍率
+let speed = 1;
+const wait = ms => new Promise(r => setTimeout(r, ms * SLOW / speed));
 const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 
 let font = null;
@@ -147,8 +150,6 @@ function pickRandom(pool, n, avoid = []) {
 let battle = null;
 let playerTeam = [];
 let battleId = 0;       // やり直したら古いバトルの非同期処理を止めるため
-let choose = null;      // プレイヤーの入力待ち（resolve 関数）
-let targetingFor = null;
 
 function cardHTML(u) {
   return `<div class="card ${u.side}" data-id="${u.id}">
@@ -210,7 +211,7 @@ async function startBattle(chars) {
   $('log').innerHTML = '';
   $('vs').textContent = `${chars.join('')}  VS  ${enemy.join('')}`;
   for (const u of battle.units) updateCard(u, true);
-  setCommand(null);
+  setStatus('');
   log(`CPU チーム「${enemy.join('')}」が あらわれた！`);
   await wait(700);
 
@@ -221,16 +222,11 @@ async function startBattle(chars) {
     for (const x of battle.units) updateCard(x);
     document.querySelectorAll('.card.turn').forEach(el => el.classList.remove('turn'));
     cardEl(u).classList.add('turn');
-    let choice;
-    if (u.side === 'p') {
-      choice = await askPlayer(u);
-      if (id !== battleId) return;
-    } else {
-      setCommand(null, `「${u.ch}」(CPU) が かんがえている…`);
-      await wait(550);
-      choice = cpuChoose(battle, u);
-    }
-    setCommand(null, '');
+    // 戦闘は自動：味方も敵も同じ考え方で行動を選ぶ
+    setStatus(`${battle.round} ラウンド　「${u.ch}」のばん`);
+    await wait(450);
+    if (id !== battleId) return;
+    const choice = cpuChoose(battle, u);
     await play(u, act(battle, u, choice.action, choice.target));
     if (id !== battleId) return;
     await wait(250);
@@ -273,70 +269,35 @@ async function play(actor, events) {
   }
 }
 
-function setCommand(u, text = '') {
-  $('prompt').textContent = text;
-  $('actions').hidden = !u;
-  $('targeting').hidden = true;
-  if (!u) return;
-  const sp = SPECIALS[u.char.special];
-  const btn = document.querySelector('[data-act="special"]');
-  btn.disabled = !specialReady(u);
-  $('sp-name').textContent = specialReady(u) ? sp.name : `${sp.name}（あと${u.cd}）`;
-}
+function setStatus(text) { $('prompt').textContent = text; }
 
-// プレイヤーのコマンド入力を待つ
-function askPlayer(u) {
-  setCommand(u, `「${u.ch}」のばん。どうする？`);
-  return new Promise(resolve => { choose = { u, resolve }; });
-}
-
-function onAction(action) {
-  if (!choose) return;
-  const { u, resolve } = choose;
-  const finish = target => { choose = null; targetingFor = null; resolve({ action, target }); };
-  const needTarget = action === 'attack' || (action === 'special' && specialNeedsTarget(u));
-  if (!needTarget) return finish();
-  const targets = alive(battle, 'e');
-  if (targets.length === 1) return finish(targets[0].id);
-  // 相手を選ぶ
-  targetingFor = finish;
-  $('actions').hidden = true;
-  $('targeting').hidden = false;
-  $('prompt').textContent = action === 'attack' ? 'だれを こうげきする？' : `だれに ${SPECIALS[u.char.special].name}？`;
-  document.body.classList.add('targeting');
+function setSpeed(v) {
+  speed = v;
+  $('speed').textContent = `はやおくり ×${v}`;
+  try { localStorage.setItem(SPEED_KEY, String(v)); } catch { /* 保存できなくても遊べる */ }
 }
 
 function setupBattle() {
-  $('actions').addEventListener('click', e => {
-    const b = e.target.closest('button');
-    if (b && !b.disabled) onAction(b.dataset.act);
-  });
-  $('cancel').addEventListener('click', () => {
-    targetingFor = null;
-    document.body.classList.remove('targeting');
-    if (choose) setCommand(choose.u, `「${choose.u.ch}」のばん。どうする？`);
-  });
+  $('speed').addEventListener('click', () => setSpeed(SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length]));
+  let saved = 1;
+  try { saved = Number(localStorage.getItem(SPEED_KEY)) || 1; } catch { /* なければ ×1 */ }
+  setSpeed(SPEEDS.includes(saved) ? saved : 1);
   $('battle').addEventListener('click', e => {
     const card = e.target.closest('.card');
     if (!card) return;
-    const u = unit(battle, card.dataset.id);
-    if (targetingFor) {
-      if (u.side !== 'e' || u.hp <= 0) return;
-      document.body.classList.remove('targeting');
-      targetingFor(u.id);
-      return;
-    }
-    showDetail(u);
+    showDetail(unit(battle, card.dataset.id));
   });
   $('detail').addEventListener('click', () => { $('detail').hidden = true; });
   $('again').addEventListener('click', () => startBattle(playerTeam));
-  $('rebuild').addEventListener('click', () => {
+  const toBuild = () => {
     battleId++;
     $('result').hidden = true;
     $('battle').hidden = true;
     $('build').hidden = false;
     renderBuild();
-  });
+  };
+  $('rebuild').addEventListener('click', toBuild);
+  $('quit').addEventListener('click', toBuild);
 }
 
 function showDetail(u) {
@@ -353,7 +314,7 @@ function showResult(w) {
   $('result-title').className = win ? 'win' : 'lose';
   const left = alive(battle, w).map(u => `「${u.ch}」`).join('');
   $('result-sub').textContent = `${battle.round} ラウンド・のこり ${left}`;
-  setCommand(null, '');
+  setStatus('');
   $('result').hidden = false;
 }
 
