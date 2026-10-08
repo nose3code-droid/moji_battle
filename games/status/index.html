@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字ステータス対戦</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- チームづくり -->
+  <section id="build" class="screen">
+    <h1>文字ステータス対戦</h1>
+    <p class="lead">文字の<b>形</b>がそのまま強さになる。1〜3文字でチームを作ろう</p>
+    <div class="row">
+      <input id="team" type="text" value="あ木一" autocomplete="off" aria-label="チームの文字（1〜3文字）">
+      <button id="random" class="sub">おまかせ</button>
+    </div>
+    <div class="row presets" id="presets"></div>
+    <div id="team-msg" class="note"></div>
+    <div id="preview" class="preview"></div>
+    <button id="fight" class="big" disabled>たたかう！</button>
+    <p class="note">面積が大きい→HP／とがって周りが長い→こうげき／丸くてぎっしり→ぼうぎょ／小さい・細長い→すばやさ／穴やパーツが多い→とくしゅ。特技は形のいちばんの特徴で決まる</p>
+    <p class="note"><a href="../../">← 文字ころがしレースへ</a></p>
+  </section>
+
+  <!-- バトル -->
+  <section id="battle" class="screen" hidden>
+    <div class="side enemy" id="enemy-row"></div>
+    <div id="mid">
+      <div id="vs"></div>
+      <div id="log" aria-live="polite"></div>
+    </div>
+    <div class="side player" id="player-row"></div>
+    <div id="command">
+      <div id="prompt"></div>
+      <div class="row" id="actions">
+        <button data-act="attack">こうげき</button>
+        <button data-act="guard" class="sub">ぼうぎょ</button>
+        <button data-act="special" class="sp">とくぎ<small id="sp-name"></small></button>
+      </div>
+      <div class="row" id="targeting" hidden>
+        <span>相手のカードをタップ</span>
+        <button id="cancel" class="sub">もどる</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 勝敗 -->
+  <div id="result" class="overlay" hidden>
+    <div class="box">
+      <div id="result-title"></div>
+      <div id="result-sub"></div>
+      <div class="row">
+        <button id="again">もう一度</button>
+        <button id="rebuild" class="sub">チームを変える</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- キャラの詳しいステータス -->
+  <div id="detail" class="overlay" hidden>
+    <div class="box" id="detail-box"></div>
+  </div>
+
+  <div id="loading" class="overlay"><div class="box">フォントを読み込み中…</div></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
