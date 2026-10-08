@@ -18,7 +18,7 @@
   <!-- チームづくり -->
   <section id="build" class="screen">
     <h1>文字ステータス対戦</h1>
-    <p class="lead">文字の<b>形</b>がそのまま強さになる。1〜3文字でチームを作ろう</p>
+    <p class="lead">文字の<b>形</b>がそのまま強さになる。1〜3文字でチームを作ったら、あとは自動で戦う</p>
     <div class="row">
       <input id="team" type="text" value="あ木一" autocomplete="off" aria-label="チームの文字（1〜3文字）">
       <button id="random" class="sub">おまかせ</button>
@@ -41,14 +41,9 @@
     <div class="side player" id="player-row"></div>
     <div id="command">
       <div id="prompt"></div>
-      <div class="row" id="actions">
-        <button data-act="attack">こうげき</button>
-        <button data-act="guard" class="sub">ぼうぎょ</button>
-        <button data-act="special" class="sp">とくぎ<small id="sp-name"></small></button>
-      </div>
-      <div class="row" id="targeting" hidden>
-        <span>相手のカードをタップ</span>
-        <button id="cancel" class="sub">もどる</button>
+      <div class="row" id="controls">
+        <button id="speed" class="sub">はやおくり ×1</button>
+        <button id="quit" class="sub">やめる</button>
       </div>
     </div>
   </section>
