@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字タワーバトル</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="hud">
+    <div id="info">
+      <div>ターン <b id="turns">0</b></div>
+      <div>高さ <b id="height">0.0</b> m <small>最高 <span id="best">―</span></small></div>
+    </div>
+    <div id="cpu-hand-box">
+      <span>CPU の手札</span>
+      <div id="cpu-hand"></div>
+    </div>
+  </div>
+  <div id="banner"></div>
+
+  <div id="controls">
+    <div id="hand" aria-label="あなたの手札"></div>
+    <div class="row" id="pad">
+      <button id="left" aria-label="左へ">◀</button>
+      <button id="rot-l" aria-label="左に回す">⟲</button>
+      <button id="drop">落とす</button>
+      <button id="rot-r" aria-label="右に回す">⟳</button>
+      <button id="right" aria-label="右へ">▶</button>
+    </div>
+  </div>
+
+  <div id="title" class="card">
+    <h1>文字タワーバトル</h1>
+    <p>CPU と交互に文字を落として、台の上に積み上げよう。<br><b>自分の番で台から文字を落としたら負け</b>。</p>
+    <p class="hint">手札から文字を選び、ドラッグ（←→）で移動、⟳（↑）で回転、「落とす」（スペース）で落下。<br>「口」は平らで積みやすいけれど、「ゑ」や「@」は手ごわい。</p>
+    <div class="row" id="levels">
+      <button data-level="easy">よわい</button>
+      <button data-level="normal">ふつう</button>
+      <button data-level="hard">つよい</button>
+    </div>
+    <button id="start" disabled>読み込み中…</button>
+    <a href="../../" class="back">文字ころがしレースへ</a>
+  </div>
+
+  <div id="result" class="card" hidden>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="to-title">強さを変える</button>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #cfe8f7; font-family: system-ui, sans-serif; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+button { font-size: 16px; border: none; border-radius: 10px; padding: 8px 12px; background: #2b7de9; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #999; cursor: default; }
+.row { display: flex; gap: 6px; }
+[hidden] { display: none !important; }
+.glyph { font-family: 'MojiTower', system-ui, sans-serif; }
+
+#hud {
+  position: fixed; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: flex-start;
+  pointer-events: none; color: #123; text-shadow: 0 0 4px #fff;
+}
+#info { font-size: 15px; line-height: 1.5; background: rgba(255,255,255,.8); border-radius: 10px; padding: 6px 10px; }
+#info b { font-size: 20px; }
+#info small { margin-left: 4px; font-size: 12px; color: #556; }
+#cpu-hand-box { text-align: right; font-size: 12px; color: #335; background: rgba(255,255,255,.8); border-radius: 10px; padding: 6px 8px; }
+#cpu-hand { display: flex; gap: 4px; margin-top: 2px; justify-content: flex-end; }
+#cpu-hand span { width: 32px; height: 32px; line-height: 32px; text-align: center; font-size: 22px; background: #e3ecf8; border-radius: 6px; text-shadow: none; }
+#cpu-hand span.on { background: #42a5f5; color: #fff; }
+
+#banner {
+  position: fixed; top: 74px; left: 50%; transform: translateX(-50%); padding: 6px 18px; border-radius: 999px;
+  font-size: 18px; font-weight: bold; color: #fff; background: #e8590c; box-shadow: 0 2px 6px rgba(0,0,0,.2);
+  pointer-events: none; white-space: nowrap;
+}
+#banner.cpu { background: #1e6fd0; }
+#banner:empty { display: none; }
+
+#controls {
+  position: fixed; left: 50%; bottom: 10px; transform: translateX(-50%); width: min(440px, calc(100vw - 20px));
+  padding: 8px; background: rgba(255,255,255,.95); border-radius: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+#hand { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+#hand button {
+  width: 64px; height: 64px; padding: 0; font-size: 40px; line-height: 64px; background: #fff3e6; color: #3a2210;
+  border: 3px solid #f2d3b3;
+}
+#hand button.on { border-color: #e8590c; background: #ffe0c2; }
+#hand button:disabled { background: #eee; color: #888; border-color: #ddd; }
+#pad button { flex: 1; min-width: 0; height: 52px; font-size: 22px; background: #eef; color: #223; }
+#pad #drop { flex: 2; background: #e8590c; color: #fff; font-weight: bold; font-size: 20px; }
+#pad button:disabled, #pad #drop:disabled { background: #e5e5e5; color: #aaa; }
+
+.card {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(360px, calc(100vw - 32px)); padding: 18px; text-align: center;
+  background: rgba(255,255,255,.96); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.25);
+}
+#title h1 { margin: 0 0 8px; font-size: 28px; }
+#title p { margin: 8px 0; font-size: 14px; line-height: 1.6; color: #333; }
+#title .hint { font-size: 12px; color: #556; }
+#levels { margin: 12px 0; }
+#levels button { flex: 1; background: #eef; color: #445; }
+#levels button.on { background: #223a5e; color: #fff; }
+#start { width: 100%; font-size: 20px; padding: 12px; background: #e8590c; }
+#start:disabled { background: #999; }
+.back { display: inline-block; margin-top: 12px; font-size: 13px; color: #2b7de9; }
+#result-title { font-size: 28px; font-weight: bold; }
+#result-sub { margin: 8px 0 14px; font-size: 14px; line-height: 1.6; color: #444; }
+#result .row button { flex: 1; }
+#to-title { background: #eef; color: #223; }
+
+#msg {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.7); color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 15px;
+  pointer-events: none; white-space: nowrap;
+}
+#msg:empty { display: none; }
+
+@media (max-width: 480px) {
+  #info { font-size: 13px; }
+  #info b { font-size: 17px; }
+  #banner { top: 90px; font-size: 16px; }
+  #hand button { width: 56px; height: 56px; font-size: 34px; line-height: 56px; }
+  #pad button { height: 48px; }
+}
