@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字ずもう</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="banzuke">
+    <div class="side east"><small>東</small><b id="name0">―</b></div>
+    <div id="clock"></div>
+    <div class="side west"><small>西</small><b id="name1">―</b></div>
+  </div>
+
+  <div id="panel">
+    <div class="title">文字ずもう</div>
+    <div class="row">
+      <label class="lbl east">東<small>あなた</small></label>
+      <input id="char" type="text" value="山" maxlength="2" autocomplete="off" aria-label="自分の文字">
+      <div class="presets" id="presets0"></div>
+    </div>
+    <div class="row">
+      <label class="lbl west">西<small>CPU</small></label>
+      <input id="cpu-char" type="text" value="イ" maxlength="2" autocomplete="off" aria-label="相手の文字">
+      <div class="presets" id="presets1"></div>
+    </div>
+    <div class="row level">
+      <span>CPUの強さ</span>
+      <div id="levels"></div>
+    </div>
+    <div id="stats"></div>
+    <button id="go" disabled>はっけよい！</button>
+    <div id="record"></div>
+  </div>
+
+  <div id="call"></div>
+
+  <button id="tap" hidden>トン！<small>連打で揺らす（スペースキーでも）</small></button>
+
+  <div id="result" hidden>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div class="row">
+      <button id="retry">もう一番</button>
+      <button id="change">文字を変える</button>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
