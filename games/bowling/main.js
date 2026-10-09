@@ -12,12 +12,12 @@ import { nextRoll, frameTotals, frameMarks, totalScore } from './score.js';
 
 const BEST_KEY = 'moji_bowling.best';    // 文字ごとのハイスコア { ボールの字: { ピンの字: 点 } }
 const STAGE_KEY = 'moji_bowling.stage';
-// ピンの字（ステージ）。どれも高さを揃えてある
+// ピンの字（ステージ）。どれも高さを揃えてある。kick は当たったときのはじけ飛びやすさ（字ごとに倒れやすさが違うのを揃える）
 const STAGES = [
-  { ch: 'I', name: 'ふつう' },
-  { ch: '｜', name: 'ほそい' },
-  { ch: '人', name: 'どっしり' },
-  { ch: '凸', name: 'かたい' },
+  { ch: 'I', name: 'ふつう', kick: 1 },
+  { ch: '｜', name: 'ほそい', kick: 1.4 },
+  { ch: '人', name: 'どっしり', kick: 1 },
+  { ch: '凸', name: 'かたい', kick: 0.2 },
 ];
 const SHOW_SEC = 1.8;                    // 投球のあと結果を見せる時間
 
@@ -171,7 +171,7 @@ function setBall(ch) {
 }
 
 function setPins() {
-  pin = makePin(RAPIER, font, STAGES[stage].ch);
+  pin = makePin(RAPIER, font, STAGES[stage].ch, STAGES[stage].kick);
   for (const m of pinMeshes) scene.remove(m);
   if (pinGeo) { pinGeo.geometry.dispose(); pinGeo.material.dispose(); }
   pinGeo = buildMesh(pin.polys, PIN_DEPTH, 0xf6f4ee);
@@ -504,7 +504,7 @@ requestAnimationFrame(frame);
 
 // 調整用：描画せずに1投だけ投げて結果を返す（コンソールで simulateThrow('〇', 'I', 0, 0, 70) ）。記録には残さない
 window.simulateThrow = (ch, pinCh, pos, aim, power, stand = Array(10).fill(true)) => {
-  const b = makeBall(font, ch), p = makePin(RAPIER, font, pinCh);
+  const b = makeBall(font, ch), p = makePin(RAPIER, font, pinCh, STAGES.find(s => s.ch === pinCh)?.kick ?? 1);
   if (!b || !p) return null;
   const s = createThrow(RAPIER, b, p, stand, { pos, aim, power });
   let maxDx = 0;
