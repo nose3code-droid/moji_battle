@@ -17,7 +17,7 @@ const STAGES = [
   { ch: 'I', name: 'ふつう', kick: 1 },
   { ch: '｜', name: 'ほそい', kick: 1.4 },
   { ch: '人', name: 'どっしり', kick: 1 },
-  { ch: '凸', name: 'かたい', kick: 0.2 },
+  { ch: '凸', name: 'かたい', kick: 0.2, mass: 1.3 },
 ];
 const SHOW_SEC = 1.8;                    // 投球のあと結果を見せる時間
 
@@ -171,7 +171,7 @@ function setBall(ch) {
 }
 
 function setPins() {
-  pin = makePin(RAPIER, font, STAGES[stage].ch, STAGES[stage].kick);
+  pin = makePin(RAPIER, font, STAGES[stage].ch, STAGES[stage].kick, STAGES[stage].mass);
   for (const m of pinMeshes) scene.remove(m);
   if (pinGeo) { pinGeo.geometry.dispose(); pinGeo.material.dispose(); }
   pinGeo = buildMesh(pin.polys, PIN_DEPTH, 0xf6f4ee);
@@ -504,7 +504,8 @@ requestAnimationFrame(frame);
 
 // 調整用：描画せずに1投だけ投げて結果を返す（コンソールで simulateThrow('〇', 'I', 0, 0, 70) ）。記録には残さない
 window.simulateThrow = (ch, pinCh, pos, aim, power, stand = Array(10).fill(true)) => {
-  const b = makeBall(font, ch), p = makePin(RAPIER, font, pinCh, STAGES.find(s => s.ch === pinCh)?.kick ?? 1);
+  const st = STAGES.find(s => s.ch === pinCh);
+  const b = makeBall(font, ch), p = makePin(RAPIER, font, pinCh, st?.kick, st?.mass);
   if (!b || !p) return null;
   const s = createThrow(RAPIER, b, p, stand, { pos, aim, power });
   let maxDx = 0;
