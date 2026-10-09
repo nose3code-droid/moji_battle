@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字ボウリング</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <header id="bar">
+    <a href="../../">← メインページへ</a>
+    <b>文字ボウリング</b>
+    <span id="now"></span>
+  </header>
+
+  <div id="card" hidden></div>
+
+  <div id="panel">
+    <div class="row">
+      <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="ボールにする文字">
+      <button id="go" disabled>ゲーム開始</button>
+    </div>
+    <div class="row presets">
+      <button data-c="〇">〇</button>
+      <button data-c="あ">あ</button>
+      <button data-c="口">口</button>
+      <button data-c="鬱">鬱</button>
+      <button data-c="一">一</button>
+      <button data-c="@">@</button>
+    </div>
+    <div class="row stages">
+      <span>ピン</span>
+    </div>
+    <div id="stats"></div>
+    <div class="note">「〇」はまっすぐ転がる。角ばった字はガタガタ曲がり、平たい字は寝転んで滑る。同じ字・同じ投げ方なら毎回同じ結果になります。</div>
+  </div>
+
+  <div id="aim" hidden>
+    <div class="steps">
+      <button data-step="0">① 立ち位置</button>
+      <button data-step="1">② 向き</button>
+      <button data-step="2">③ 強さ</button>
+    </div>
+    <div class="value"><button id="minus" class="small" aria-label="減らす">◀</button><span id="val"></span><button id="plus" class="small" aria-label="増やす">▶</button></div>
+    <input id="slider" type="range" aria-label="値">
+    <button id="ok">決定</button>
+    <div class="hint">画面を左右にドラッグして調整、タップで決定</div>
+    <button id="quit" class="link">← 文字を選び直す</button>
+  </div>
+
+  <div id="rolling" hidden>
+    <button id="fast" class="small">早送り ▶▶</button>
+  </div>
+
+  <div id="pinmap" hidden></div>
+  <div id="callout"></div>
+
+  <div id="result" hidden>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="change">別の文字</button>
+    </div>
+    <a href="../../" class="home">← メインページへ</a>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

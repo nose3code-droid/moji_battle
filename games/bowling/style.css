@@ -1,0 +1,117 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #20242e; font-family: system-ui, sans-serif; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+[hidden] { display: none !important; }
+
+button { font-size: 16px; border: none; border-radius: 8px; padding: 8px 12px; background: #1f6feb; color: #fff; cursor: pointer; }
+button:disabled { background: #999; }
+button.small { padding: 4px 8px; font-size: 13px; background: #eef; color: #223; }
+button.link { padding: 2px 0; background: none; color: #2b7de9; font-size: 13px; }
+.row { display: flex; gap: 6px; align-items: center; }
+.row + .row, #stats { margin-top: 8px; }
+
+/* ---------- 上のバー（戻りリンク） ---------- */
+#bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 38px; display: flex; align-items: center; gap: 12px;
+  padding: 0 12px; background: rgba(20,24,34,.82); color: #fff; font-size: 14px;
+}
+#bar a { color: #ffd54f; text-decoration: none; font-weight: bold; white-space: nowrap; }
+#bar b { font-size: 16px; white-space: nowrap; }
+#now { margin-left: auto; font-size: 13px; color: #cfd6e4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- スコア表 ---------- */
+#card {
+  position: fixed; top: 46px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 16px));
+  display: grid; grid-template-columns: repeat(9, 1fr) 1.45fr 1.2fr; background: #fff; border: 2px solid #223;
+  border-radius: 6px; overflow: hidden; font-variant-numeric: tabular-nums; color: #223;
+}
+.fr { border-right: 1px solid #99a; display: flex; flex-direction: column; }
+.fr .no { font-size: 10px; text-align: center; background: #223a5e; color: #fff; line-height: 14px; }
+.fr .marks { display: flex; justify-content: flex-end; height: 20px; }
+.fr .marks span { flex: 1; max-width: 50%; text-align: center; font-size: 13px; line-height: 20px; border-left: 1px solid #ccd; border-bottom: 1px solid #ccd; }
+.fr.last .marks span { max-width: 34%; }
+.fr .sum { text-align: center; font-size: 15px; font-weight: bold; line-height: 22px; min-height: 22px; }
+.fr.cur { background: #fff6cf; }
+.fr.total { border-right: none; }
+.fr.total .sum { font-size: 18px; line-height: 42px; }
+
+/* ---------- 文字選び ---------- */
+#panel {
+  position: fixed; top: 50px; left: 12px; right: 12px; max-width: 360px;
+  background: rgba(255,255,255,.94); border-radius: 12px; padding: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.3);
+}
+#char { width: 64px; font-size: 28px; text-align: center; border: 2px solid #888; border-radius: 8px; }
+#go { flex: 1; font-size: 20px; }
+.presets button { flex: 1; padding: 6px 0; background: #eef; color: #223; font-size: 18px; }
+.stages > span { width: 2.6em; flex: none; font-size: 13px; color: #333; }
+.stages button { flex: 1; padding: 4px 0; font-size: 13px; line-height: 1.3; background: #eef; color: #445; }
+.stages button b { display: block; font-size: 18px; }
+.stages button.on { background: #223a5e; color: #fff; }
+#stats { font-size: 13px; line-height: 1.5; color: #333; }
+.stat-head { display: flex; justify-content: space-between; align-items: baseline; }
+.stat-head b { font-size: 15px; }
+.stat-head span { font-size: 12px; color: #fff; background: #223a5e; border-radius: 4px; padding: 0 6px; }
+.stat { display: flex; align-items: center; gap: 6px; }
+.stat span { width: 4.5em; flex: none; }
+.stat i { flex: 1; height: 8px; background: #e3e7ee; border-radius: 4px; overflow: hidden; }
+.stat i b { display: block; height: 100%; background: #1f6feb; }
+.stat em { width: 5em; flex: none; text-align: right; font-style: normal; font-size: 12px; color: #555; }
+.note { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
+
+/* ---------- 投げ方 ---------- */
+#aim {
+  position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%);
+  width: min(380px, calc(100vw - 24px)); padding: 10px; text-align: center;
+  background: rgba(255,255,255,.94); border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.3);
+  user-select: none; -webkit-user-select: none;
+}
+.steps { display: flex; gap: 4px; }
+.steps button { flex: 1; padding: 6px 0; font-size: 14px; background: #eef; color: #445; }
+.steps button.on { background: #223a5e; color: #fff; }
+.steps button.set { background: #d7e6ff; color: #223a5e; }
+.value { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 8px 0 2px; }
+#val { min-width: 9em; font-size: 20px; font-weight: bold; color: #223; font-variant-numeric: tabular-nums; }
+#slider { width: 100%; margin: 6px 0; }
+#ok { width: 100%; padding: 12px 0; font-size: 18px; }
+#ok.throw { background: #e8590c; }
+.hint { margin-top: 6px; font-size: 12px; color: #555; }
+
+#rolling { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); }
+#fast.on { background: #ffd54f; }
+
+/* 残りピンの図（奥の列が上） */
+#pinmap {
+  position: fixed; right: 12px; top: 128px; padding: 6px 8px; background: rgba(20,24,34,.7); border-radius: 10px;
+  display: grid; gap: 3px;
+}
+#pinmap div { display: flex; justify-content: center; gap: 6px; }
+#pinmap i { width: 12px; height: 12px; border-radius: 50%; background: #fff; }
+#pinmap i.down { background: transparent; border: 1px solid #778; }
+#pinmap i.gone { background: transparent; border: 1px dashed #556; opacity: .5; }
+
+#callout {
+  position: fixed; left: 0; right: 0; top: 38%; text-align: center; pointer-events: none;
+  font-size: clamp(36px, 11vw, 72px); font-weight: 900; color: #fff; letter-spacing: .05em;
+  text-shadow: 0 3px 0 #e8590c, 0 6px 18px rgba(0,0,0,.5);
+}
+
+/* ---------- 結果 ---------- */
+#result {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -30%); width: min(340px, calc(100vw - 24px));
+  padding: 16px; text-align: center; background: rgba(255,255,255,.96); border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,.4);
+}
+#result-title { font-size: 28px; font-weight: bold; color: #223; }
+#result-sub { margin: 6px 0 12px; font-size: 14px; color: #444; line-height: 1.6; }
+#result .row button { flex: 1; }
+#result .home { display: inline-block; margin-top: 10px; font-size: 13px; color: #2b7de9; text-decoration: none; }
+
+#msg { position: fixed; left: 0; right: 0; bottom: 8px; text-align: center; color: #fff; font-size: 14px; pointer-events: none; text-shadow: 0 1px 3px #000; }
+
+@media (max-width: 420px) {
+  #bar b { display: none; }
+  .fr .marks span { font-size: 11px; }
+  .fr .sum { font-size: 12px; }
+  .fr.total .sum { font-size: 14px; }
+  #pinmap { top: 116px; }
+}
