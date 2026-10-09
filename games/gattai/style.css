@@ -76,3 +76,25 @@ summary { cursor: pointer; text-align: center; color: #6b5a40; }
   15% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
   100% { opacity: 0; transform: translate(-50%, -160%) scale(1); }
 }
+
+/* 必殺技 */
+.pop.big { font-size: 26px; color: #b71c1c; z-index: 3; }
+.flash { position: fixed; inset: 0; pointer-events: none; z-index: 2; animation: flash .6s ease-out forwards; }
+@keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+.special-banner {
+  position: fixed; left: 50%; top: 38%; z-index: 4; pointer-events: none; white-space: nowrap;
+  display: flex; align-items: center; gap: 10px; padding: 8px 22px; border-radius: 999px;
+  color: #fff; background: linear-gradient(90deg, #b71c1c, #e8590c); box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  animation: banner 1.6s ease-out forwards;
+}
+.special-banner span { font-size: 40px; line-height: 1; }
+.special-banner b { font-size: 26px; letter-spacing: .06em; }
+@keyframes banner {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(2.2); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(.95); }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -70%) scale(1); }
+}
+.book .sp { font-size: 14px; line-height: 1.7; }
+.book .sp b.glyph { font-size: 17px; }
