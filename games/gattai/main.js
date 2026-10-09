@@ -61,6 +61,7 @@ const guide = new THREE.Mesh(new THREE.PlaneGeometry(0.04, 1), new THREE.MeshBas
 scene.add(guide);
 
 let viewW = 10, viewH = 10, camY = BOX_H / 2;
+let tableReady = false;     // 合体表ができるまではヒントの高さを測れない
 function resize() {
   const w = innerWidth, h = innerHeight;
   renderer.setSize(w, h, false);
@@ -70,6 +71,7 @@ function resize() {
   const fit = topPx => Math.min(w / boxW, (h - topPx - botPx) / (yMax - yMin));
   const narrow = (w - boxW * fit(16)) / 2 < 300;
   document.body.classList.toggle('narrow', narrow);
+  fitHint();
   const topPx = narrow ? $('hud').offsetHeight + 16 : 16;
   const ppm = fit(topPx);
   viewW = w / ppm; viewH = h / ppm;
@@ -512,11 +514,29 @@ function renderHint() {
   const el = $('hint');
   el.classList.toggle('off', state !== 'play' || !current);
   if (state !== 'play' || !current) return;
-  const inBox = new Set(pieces.map(p => p.ch));
-  const list = partners.get(current) ?? [];
-  el.innerHTML = `<span class="me glyph">${current}</span> とくっつく字：` + (list.length
-    ? list.map(q => `<span class="chip glyph${inBox.has(q.with) ? ' here' : ''}">＋${q.with}→<b>${q.to}</b>${SPECIALS[q.to] ? '★' : ''}</span>`).join('')
-    : `<span class="chip glyph">＋${current}→<b>消える</b></span>`);
+  el.innerHTML = hintHTML(current, ch => pieces.some(p => p.ch === ch));
+}
+function hintHTML(ch, inBox) {
+  const list = partners.get(ch) ?? [];
+  return `<span class="me glyph">${ch}</span> とくっつく字：` + (list.length
+    ? list.map(q => `<span class="chip glyph${inBox(q.with) ? ' here' : ''}">＋${q.with}→<b>${q.to}</b>${SPECIALS[q.to] ? '★' : ''}</span>`).join('')
+    : `<span class="chip glyph">＋${ch}→<b>消える</b></span>`);
+}
+
+// ヒントの欄は、いちばん長くなる字（落ちてくる字のどれか）が全部入る高さにしておく。
+// 字が変わるたびに欄の高さが変わると、箱の位置までずれてしまうので
+function fitHint() {
+  if (!tableReady) return;
+  const el = $('hint');
+  const keep = el.innerHTML;
+  el.style.minHeight = '';
+  let max = 0;
+  for (const ch of new Set(pool)) {
+    el.innerHTML = hintHTML(ch, () => true); // 全部目立たせた（いちばん幅を取る）状態で測る
+    max = Math.max(max, el.offsetHeight);
+  }
+  el.innerHTML = keep;
+  el.style.minHeight = `${max}px`;
 }
 
 function openBook(open) {
@@ -650,6 +670,8 @@ try {
     document.fonts.add(await face.load());
   } catch { /* 表示用なので失敗してもよい */ }
   buildTable();
+  tableReady = true;
+  resize(); // ヒントの欄の高さが決まったので、箱の位置を合わせ直す
   msg('');
   $('start').disabled = false;
   $('start').textContent = 'スタート';
