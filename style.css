@@ -45,7 +45,6 @@ button.small { padding: 4px 8px; font-size: 13px; background: #eef; color: #223;
 
 button.link { margin-top: 6px; padding: 2px 0; background: none; color: #2b7de9; font-size: 13px; }
 .game-link { display: block; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e3e7ee; color: #e8590c; font-size: 14px; font-weight: bold; text-decoration: none; }
-.game-link + .game-link { margin-top: 4px; padding-top: 0; border-top: none; } /* 2つ目以降は区切り線なしで並べる */
 #ranking { margin: 4px 0 0; padding-left: 0; list-style: none; font-size: 13px; max-height: 40vh; overflow-y: auto; }
 #ranking span { display: inline-block; width: 2em; color: #888; }
 

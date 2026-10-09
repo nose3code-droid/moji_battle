@@ -2,83 +2,88 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>文字ころがしレース</title>
-  <link rel="stylesheet" href="style.css">
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
-      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-deterministic-compat@0.21.0/dist/rapier.mjs",
-      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>文字バトル</title>
+  <style>
+    :root {
+      --bg: #f4f1ea; --card: #fffdf8; --ink: #22252b; --sub: #6b6f78; --line: #e2ddd0;
+      --accent: #e8590c; --soon: #a3a7ae;
     }
-  }
-  </script>
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #17181c; --card: #22242a; --ink: #eceae4; --sub: #9a9ea8; --line: #33363d;
+        --accent: #ff8a3d; --soon: #61656e;
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #17181c; --card: #22242a; --ink: #eceae4; --sub: #9a9ea8; --line: #33363d;
+      --accent: #ff8a3d; --soon: #61656e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+    }
+    main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+    h1 { margin: 0; font-size: clamp(32px, 8vw, 52px); letter-spacing: .12em; }
+    .lead { margin: 8px 0 28px; color: var(--sub); line-height: 1.7; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .game {
+      display: flex; gap: 14px; align-items: center; padding: 16px;
+      background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+      color: inherit; text-decoration: none; transition: transform .12s, border-color .12s;
+    }
+    a.game:hover, a.game:focus-visible { transform: translateY(-2px); border-color: var(--accent); outline: none; }
+    .glyph {
+      flex: none; width: 64px; height: 64px; display: grid; place-items: center;
+      font-size: 44px; font-weight: 900; line-height: 1; color: var(--accent);
+      border-radius: 12px; background: color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    .game h2 { margin: 0 0 4px; font-size: 18px; }
+    .game p { margin: 0; font-size: 13px; line-height: 1.6; color: var(--sub); }
+    .game.soon { cursor: default; }
+    .game.soon .glyph { color: var(--soon); background: color-mix(in srgb, var(--soon) 15%, transparent); }
+    .game.soon h2::after { content: "準備中"; margin-left: 8px; padding: 1px 6px; font-size: 11px; font-weight: normal; color: var(--sub); border: 1px solid var(--line); border-radius: 6px; vertical-align: middle; }
+  </style>
 </head>
 <body>
-  <canvas id="view"></canvas>
+  <main>
+    <h1>文字バトル</h1>
+    <p class="lead">打った文字の形が、そのまま強さになる。<br>丸い字、とがった字、重たい字――好きな1文字で遊んでみよう。</p>
+    <div class="grid" id="games"></div>
+  </main>
 
-  <div id="panel">
-    <div class="row">
-      <input id="char" type="text" value="あ" maxlength="2" autocomplete="off" aria-label="文字">
-      <button id="go" disabled>転がす</button>
-    </div>
-    <div class="row presets">
-      <button data-c="〇">〇</button>
-      <button data-c="あ">あ</button>
-      <button data-c="口">口</button>
-      <button data-c="木">木</button>
-      <button data-c="鬱">鬱</button>
-      <button data-c="S">S</button>
-    </div>
-    <div class="row mode">
-      <button data-mode="cpu">CPU対戦</button>
-      <button data-mode="ghost">ゴースト対戦</button>
-    </div>
-    <div class="row opp">
-      <span>対戦相手</span><span id="opponents"></span>
-      <button id="shuffle" class="small">入れ替え</button>
-    </div>
-    <div id="stats"></div>
-    <button id="rank-toggle" class="link">自己ベスト一覧 ▼</button>
-    <div id="rank-box" hidden>
-      <ol id="ranking"></ol>
-      <button id="reset" class="small danger">記録とゴーストをすべて消す</button>
-    </div>
-    <button id="world-toggle" class="link">世界ランキング ▼</button>
-    <div id="world-box" hidden>
-      <ol id="world" class="world"></ol>
-    </div>
-    <a href="games/tower/" class="game-link">文字タワーバトルで遊ぶ →</a>
-    <a href="games/catapult/" class="game-link">文字カタパルトで遊ぶ →</a>
-  </div>
+  <script>
+    // 遊べる作品の一覧。path はこのページからの相対パス
+    const GAMES = [
+      { path: 'race.html',        glyph: '〇', name: '文字ころがしレース', desc: '文字を坂道で転がしてタイムを競う。世界ランキングあり' },
+      { path: 'games/sumo/',      glyph: '山', name: '文字ずもう',         desc: '土俵をトントン叩いて、相手の文字を倒すか押し出せば勝ち' },
+      { path: 'games/tower/',     glyph: '口', name: '文字タワーバトル',   desc: '交互に文字を積み上げる。塔を崩した方の負け' },
+      { path: 'games/catapult/',  glyph: '鬱', name: '文字カタパルト',     desc: 'パチンコで文字を撃って、城の「王」を落とせ' },
+      { path: 'games/koma/',      glyph: '米', name: '文字ゴマ',           desc: '文字をコマにして回し合う。最後まで回っていた字の勝ち' },
+      { path: 'games/status/',    glyph: '龍', name: '文字ステータス対戦', desc: '形からHPや攻撃が決まる、ターン制のカードバトル' },
+      { path: 'games/tobashi/',   glyph: '一', name: '文字とばし',         desc: 'パワーと角度を決めて飛ばし、何メートル飛ぶかを競う' },
+    ];
 
-  <div id="hud">
-    <div><span id="time">0.00</span> 秒</div>
-    <div class="track" id="track"></div>
-  </div>
-  <div id="count"></div>
+    const esc = s => s.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
+    const grid = document.getElementById('games');
+    grid.innerHTML = GAMES.map(g => `
+      <a class="game" href="${esc(g.path)}" data-path="${esc(g.path)}">
+        <span class="glyph" aria-hidden="true">${esc(g.glyph)}</span>
+        <span><h2>${esc(g.name)}</h2><p>${esc(g.desc)}</p></span>
+      </a>`).join('');
 
-  <div id="result" hidden>
-    <div id="result-title"></div>
-    <div id="result-sub"></div>
-    <ol id="standings"></ol>
-    <div id="submit-box" hidden>
-      <div id="submit-info"></div>
-      <div class="row" id="submit-form">
-        <input id="name" type="text" placeholder="ニックネーム" autocomplete="nickname">
-        <button id="submit">世界ランキングに登録</button>
-      </div>
-      <ol id="world-result" class="world"></ol>
-    </div>
-    <div class="row">
-      <button id="retry">もう一度</button>
-      <button id="change">別の文字</button>
-    </div>
-  </div>
-
-  <div id="msg"></div>
-
-  <script type="module" src="main.js"></script>
+    // まだ公開されていない作品は「準備中」にしてリンクを外す（取り込まれたら自動で遊べるようになる）
+    for (const el of grid.querySelectorAll('.game')) {
+      fetch(el.dataset.path, { method: 'HEAD' })
+        .then(res => { if (!res.ok) markSoon(el); })
+        .catch(() => { /* file:// などで確かめられないときはリンクのまま */ });
+    }
+    function markSoon(el) {
+      el.classList.add('soon');
+      el.removeAttribute('href');
+      el.setAttribute('aria-disabled', 'true');
+    }
+  </script>
 </body>
 </html>
