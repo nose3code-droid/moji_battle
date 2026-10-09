@@ -11,12 +11,26 @@ button:disabled { background: #999; cursor: default; }
   position: fixed; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: flex-start;
   pointer-events: none; color: #3a2a14;
 }
-#hud a { pointer-events: auto; }
+#hud a, #hud button { pointer-events: auto; }
+#left { flex: 1; min-width: 0; max-width: 280px; margin-right: 8px; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+body.narrow #left { max-width: none; }
+#right { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+#book-btn { padding: 6px 8px; font-size: 14px; background: #8a5a2b; }
 #info { font-size: 15px; line-height: 1.5; background: rgba(255,255,255,.85); border-radius: 10px; padding: 6px 10px; }
 #info b { font-size: 22px; }
 #info small { font-size: 12px; color: #6b5a40; }
 #info .back { margin-bottom: 2px; }
 #next-box { text-align: center; font-size: 12px; color: #6b5a40; background: rgba(255,255,255,.85); border-radius: 10px; padding: 6px 8px; }
+/* いま待っている字が、何とくっつくか */
+#hint {
+  width: 100%; height: 64px; overflow: hidden; padding: 5px 8px; font-size: 14px; line-height: 1.5;
+  background: rgba(255,255,255,.85); border-radius: 10px;
+}
+#hint.off { visibility: hidden; }
+#hint .me { font-size: 17px; font-weight: bold; }
+#hint .chip { display: inline-block; margin-right: 8px; white-space: nowrap; color: #6b5a40; }
+#hint .chip b { color: #c2410c; }
+#hint .chip.here { color: #3a2a14; font-weight: bold; background: #ffe8c2; border-radius: 6px; padding: 0 4px; margin-right: 4px; }
 #next { width: 48px; height: 48px; line-height: 48px; margin-top: 2px; font-size: 36px; color: #3a2a14; background: #fff3e0; border-radius: 8px; }
 
 .card {
@@ -30,9 +44,15 @@ button:disabled { background: #999; cursor: default; }
 #title .hint { font-size: 12px; color: #556; }
 details { margin: 8px 0 12px; font-size: 13px; text-align: left; }
 summary { cursor: pointer; text-align: center; color: #6b5a40; }
-#book { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 4px 8px; margin-top: 8px; }
-#book span { white-space: nowrap; font-size: 15px; }
-#book b { color: #c2410c; }
+.book { margin-top: 6px; text-align: left; }
+.book h3 { margin: 10px 0 4px; font-size: 13px; color: #6b5a40; border-bottom: 1px solid #eadfcb; }
+.book h3 small { font-weight: normal; margin-left: 6px; }
+.book .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 2px 8px; }
+.book span { white-space: nowrap; font-size: 15px; }
+.book b { color: #c2410c; }
+.book .note, #title .book .note { margin: 10px 0 0; font-size: 12px; color: #6b5a40; line-height: 1.6; }
+#book-card h2 { margin: 0 0 4px; font-size: 22px; }
+#book-close { width: 100%; margin-top: 12px; font-size: 18px; padding: 10px; background: #e8590c; }
 #start, #retry { width: 100%; font-size: 20px; padding: 12px; background: #e8590c; }
 #start:disabled { background: #999; }
 #result-title { font-size: 28px; font-weight: bold; }
