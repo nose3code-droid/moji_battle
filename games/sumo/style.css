@@ -27,6 +27,7 @@ body:not(.fighting) #banzuke { display: none; }
   box-shadow: 0 2px 10px rgba(0,0,0,.3); color: #2a2018;
 }
 .title { font-size: 20px; font-weight: bold; letter-spacing: .1em; margin-bottom: 6px; }
+.title .home { float: right; font-size: 12px; font-weight: normal; letter-spacing: 0; color: #2b7de9; text-decoration: none; }
 .row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .row + .row { margin-top: 8px; }
 .lbl { width: 2.6em; text-align: center; font-weight: bold; font-size: 18px; line-height: 1.1; }
