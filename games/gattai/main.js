@@ -61,10 +61,14 @@ let viewW = 10, viewH = 10, camY = BOX_H / 2;
 function resize() {
   const w = innerWidth, h = innerHeight;
   renderer.setSize(w, h, false);
-  // 箱と、その上で待つ字が収まるようにする。狭い画面では上の表示のぶん下げる
-  const topPx = w > 720 ? 16 : $('hud').offsetHeight + 16, botPx = 20;
-  const yMin = -WALL - 0.3, yMax = BOX_H + 2.2;
-  const ppm = Math.min(w / (BOX_W + WALL * 2 + 0.6), (h - topPx - botPx) / (yMax - yMin));
+  // 箱と、その上で待つ字が収まるようにする。
+  // 箱の横に上の表示（スコア・ヒント）を置く余白が無い画面では、上の表示のぶん箱を下げる
+  const botPx = 20, yMin = -WALL - 0.3, yMax = BOX_H + 2.2, boxW = BOX_W + WALL * 2 + 0.6;
+  const fit = topPx => Math.min(w / boxW, (h - topPx - botPx) / (yMax - yMin));
+  const narrow = (w - boxW * fit(16)) / 2 < 300;
+  document.body.classList.toggle('narrow', narrow);
+  const topPx = narrow ? $('hud').offsetHeight + 16 : 16;
+  const ppm = fit(topPx);
   viewW = w / ppm; viewH = h / ppm;
   camY = yMin - botPx / ppm + viewH / 2; // 縦長の画面では箱を下に寄せる（指が届きやすい）
   camera.left = -viewW / 2; camera.right = viewW / 2;
@@ -82,6 +86,7 @@ await RAPIER.init();
 let font = null;
 const combine = new Map();  // 「字|字」→ できる字
 const tierOf = new Map();   // 字 → 段（1〜）
+const partners = new Map(); // 字 → [{ with: 相手の字, to: できる字 }]（ヒント用）
 const hueOf = new Map();    // 字 → 色合い
 let pool = [];              // 落ちてくる字（出やすさのぶん並べる）
 const pairKey = (a, b) => (a < b ? `${a}|${b}` : `${b}|${a}`);
@@ -112,10 +117,32 @@ function buildTable() {
       changed = true;
     }
   }
-  $('book').innerHTML = [...combine].map(([k, to]) => {
+  for (const [k, to] of combine) {
     const [a, b] = k.split('|');
-    return `<span class="glyph">${a}＋${b}→<b>${to}</b></span>`;
-  }).join('');
+    for (const [me, other] of [[a, b], [b, a]]) {
+      if (!partners.has(me)) partners.set(me, []);
+      if (me !== other || !partners.get(me).some(q => q.with === other)) partners.get(me).push({ with: other, to });
+    }
+  }
+  $('book').innerHTML = $('book2').innerHTML = bookHTML();
+}
+
+// 合体ずかん：できる字の段ごとに「字＋字→字」を並べる
+function bookHTML() {
+  const byTier = new Map();
+  for (const [k, to] of combine) {
+    const t = tierOf.get(to);
+    if (!byTier.has(t)) byTier.set(t, []);
+    const [a, b] = k.split('|');
+    // 小さい段の字を先に書く（林＋木 より 木＋林 のほうが読みやすい）
+    const [x, y] = tierOf.get(a) <= tierOf.get(b) ? [a, b] : [b, a];
+    byTier.get(t).push(`<span class="glyph">${x}＋${y}→<b>${to}</b></span>`);
+  }
+  const base = BASE.map(([ch]) => ch).filter(ch => tierOf.get(ch) === 1).join(' ');
+  return `<h3>落ちてくる字</h3><div class="row"><span class="glyph">${base}</span></div>` +
+    [...byTier].sort((p, q) => p[0] - q[0]).map(([t, items]) =>
+      `<h3>${t}段の字ができる<small>+${POINTS[Math.min(t, POINTS.length - 1)]}点・字が大きくなる</small></h3><div class="row">${items.join('')}</div>`).join('') +
+    '<p class="note">ここに無い同じ字どうし（森＋森 など）がぶつかると、2つとも消えてボーナス点。</p>';
 }
 
 // ---------- 字の形 ----------
@@ -161,6 +188,7 @@ let state = 'title';        // title | play | over
 let score = 0, merges = 0;
 let current = null, next = null;
 let aimX = 0, dispX = 0, cooldown = 0, dangerT = 0, overTime = 0;
+let paused = false;         // ずかんを見ている間は止める
 
 function loadBest() { try { return +localStorage.getItem(BEST_KEY) || 0; } catch { return 0; } }
 function saveBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch { /* 保存できなくても遊べる */ } }
@@ -223,7 +251,8 @@ function newGame() {
   current = randomCh(); next = randomCh();
   setHover(current);
   state = 'play';
-  $('title').hidden = true; $('result').hidden = true;
+  paused = false;
+  $('title').hidden = true; $('result').hidden = true; $('book-card').hidden = true;
   renderUI();
 }
 
@@ -244,7 +273,7 @@ const clampX = (x, shape) => {
 };
 
 function drop() {
-  if (state !== 'play' || cooldown > 0 || !hoverShape) return;
+  if (state !== 'play' || paused || cooldown > 0 || !hoverShape) return;
   aimX = clampX(aimX, hoverShape);
   addPiece(current, aimX, hoverY());
   current = next; next = randomCh();
@@ -345,6 +374,28 @@ function renderUI() {
   $('score').textContent = score;
   $('best').textContent = Math.max(loadBest(), score);
   $('next').textContent = state === 'play' ? next : '';
+  $('book-btn').hidden = state !== 'play';
+  renderHint();
+}
+
+// いま落とす字が、何とくっつくかを出す。箱の中にある相手は目立たせる
+function renderHint() {
+  const el = $('hint');
+  el.classList.toggle('off', state !== 'play' || !current);
+  if (state !== 'play' || !current) return;
+  const inBox = new Set(pieces.map(p => p.ch));
+  const list = partners.get(current) ?? [];
+  el.innerHTML = `<span class="me glyph">${current}</span> とくっつく字：` + (list.length
+    ? list.map(q => `<span class="chip glyph${inBox.has(q.with) ? ' here' : ''}">＋${q.with}→<b>${q.to}</b></span>`).join('')
+    : `<span class="chip glyph">＋${current}→<b>消える</b></span>`);
+}
+
+function openBook(open) {
+  if (state !== 'play') open = false;
+  paused = open;
+  pressing = false;
+  held.clear();
+  $('book-card').hidden = !open;
 }
 
 // ---------- 操作 ----------
@@ -352,7 +403,7 @@ function renderUI() {
 const toWorldX = clientX => (clientX / innerWidth - 0.5) * viewW;
 let pressing = false;
 canvas.addEventListener('pointerdown', e => {
-  if (state !== 'play') return;
+  if (state !== 'play' || paused) return;
   pressing = true;
   aimX = toWorldX(e.clientX);
   canvas.setPointerCapture(e.pointerId);
@@ -369,6 +420,10 @@ canvas.addEventListener('pointercancel', () => { pressing = false; });
 
 const held = new Set();
 addEventListener('keydown', e => {
+  if (paused) {
+    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openBook(false); }
+    return;
+  }
   if (state !== 'play') {
     if ((e.key === 'Enter' || e.key === ' ') && !$('start').disabled && (state === 'title' || !$('result').hidden)) { e.preventDefault(); newGame(); }
     return;
@@ -383,19 +438,21 @@ addEventListener('keyup', e => held.delete(e.key));
 
 $('start').addEventListener('click', newGame);
 $('retry').addEventListener('click', newGame);
+$('book-btn').addEventListener('click', () => openBook(true));
+$('book-close').addEventListener('click', () => openBook(false));
 
 // ---------- ループ ----------
 let last = performance.now(), acc = 0;
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000);
   last = now;
-  if (world && state !== 'title') {
+  if (world && state !== 'title' && !paused) {
     acc += dt;
     let n = 0;
     while (acc >= DT && n++ < 4) { physicsStep(); acc -= DT; }
     if (n >= 4) acc = 0;  // 重くて追いつかないときは時間を捨てる
   }
-  if (state === 'play') {
+  if (state === 'play' && !paused) {
     checkOver(dt);
     const dir = (held.has('ArrowRight') || held.has('d') ? 1 : 0) - (held.has('ArrowLeft') || held.has('a') ? 1 : 0);
     aimX += dir * 4 * dt;
