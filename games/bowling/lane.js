@@ -45,7 +45,7 @@ const TIME_LIMIT = 25;
 // 当たったピンは奥へはじけ飛ぶ（ランダムに散らばって周りのピンを巻き込む）。乱数は投げ方から決めるので毎回同じ
 const KICK_SPEED = 0.6;     // これより速く動き出したら「当たった」とみなす（m/s）
 const KICK_FULL = 3;        // この速さ以上で当たると勢いを満額足す。かすっただけのピンは少しだけ飛ぶ
-const KICK = { back: [2, 4], side: 1.8, up: [0.4, 2], spin: 10 }; // 奥へ・左右・上へ（m/s）と回転（rad/s）
+const KICK = { back: [1, 2], side: 0.9, up: [0.2, 1], spin: 5 };      // 奥へ・左右・上へ（m/s）と回転（rad/s）
 
 // ピンの位置。1番が手前の頂点、7〜10番が奥の列（7番が左）
 export const PIN_SPOTS = [
@@ -129,8 +129,8 @@ export function makeBall(font, ch) {
 
 // ピンの形。高さを PIN_H に揃える（幅が広い字は幅で抑える）
 // 「人」のように足先がとがった字もあるので、平らな床に一度立たせて落ち着いた姿勢を「立っている姿勢」にする
-// kick：当たったときのはじけ飛びやすさ（字によって倒れやすさが大きく違うので、ステージごとに揃える）
-export function makePin(RAPIER, font, ch, kick = 1) {
+// kick：当たったときのはじけ飛びやすさ、mass：重さの倍率（字によって倒れやすさが大きく違うので、ステージごとに揃える）
+export function makePin(RAPIER, font, ch, kick = 1, mass = 1) {
   const probe = glyphPolygons(font, ch, 1);
   if (!probe.length) return null;
   const s = centerPolygons(probe);
@@ -139,7 +139,7 @@ export function makePin(RAPIER, font, ch, kick = 1) {
   const size = centerPolygons(polys);
   const prisms = solidPrisms(polys, PIN_DEPTH);
   if (!prisms.length) return null;
-  const pin = { ch, polys, prisms, size, density: PIN_MASS / (prismArea(prisms) * PIN_DEPTH), rest: null, kick };
+  const pin = { ch, polys, prisms, size, density: PIN_MASS * mass / (prismArea(prisms) * PIN_DEPTH), rest: null, kick };
 
   const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
   world.timestep = DT;
