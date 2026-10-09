@@ -42,6 +42,10 @@ const STOP_SEC = 1.0;       // ボールがこの秒数ほぼ止まっていた�
 const SETTLE_SEC = 0.5;     // ピンがこの秒数静かなら終わり
 const SETTLE_MAX = 4;       // ボールが通り過ぎてからこれ以上は待たない（揺れ続けるピンの保険）
 const TIME_LIMIT = 25;
+// 当たったピンは奥へはじけ飛ぶ（ランダムに散らばって周りのピンを巻き込む）。乱数は投げ方から決めるので毎回同じ
+const KICK_SPEED = 0.6;     // これより速く動き出したら「当たった」とみなす（m/s）
+const KICK_FULL = 3;        // この速さ以上で当たると勢いを満額足す。かすっただけのピンは少しだけ飛ぶ
+const KICK = { back: [2, 4], side: 1.8, up: [0.4, 2], spin: 10 }; // 奥へ・左右・上へ（m/s）と回転（rad/s）
 
 // ピンの位置。1番が手前の頂点、7〜10番が奥の列（7番が左）
 export const PIN_SPOTS = [
@@ -125,7 +129,8 @@ export function makeBall(font, ch) {
 
 // ピンの形。高さを PIN_H に揃える（幅が広い字は幅で抑える）
 // 「人」のように足先がとがった字もあるので、平らな床に一度立たせて落ち着いた姿勢を「立っている姿勢」にする
-export function makePin(RAPIER, font, ch) {
+// kick：当たったときのはじけ飛びやすさ（字によって倒れやすさが大きく違うので、ステージごとに揃える）
+export function makePin(RAPIER, font, ch, kick = 1) {
   const probe = glyphPolygons(font, ch, 1);
   if (!probe.length) return null;
   const s = centerPolygons(probe);
@@ -134,7 +139,7 @@ export function makePin(RAPIER, font, ch) {
   const size = centerPolygons(polys);
   const prisms = solidPrisms(polys, PIN_DEPTH);
   if (!prisms.length) return null;
-  const pin = { ch, polys, prisms, size, density: PIN_MASS / (prismArea(prisms) * PIN_DEPTH), rest: null };
+  const pin = { ch, polys, prisms, size, density: PIN_MASS / (prismArea(prisms) * PIN_DEPTH), rest: null, kick };
 
   const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
   world.timestep = DT;
@@ -204,6 +209,7 @@ export function createThrow(RAPIER, ball, pin, standing, shot) {
     world, ball: body, ballColliders, dry: false, pins, pin, standing: standing.slice(), shot,
     t: 0, steps: 0, still: 0, quiet: 0, ballDone: false, ballDoneAt: 0, done: false,
     gutter: false, reachedPins: false,
+    kicked: pins.map(() => false), rand: seeded(ball.ch, pin.ch, standing, shot),
   };
 }
 
@@ -222,6 +228,40 @@ export function shotPose(ball, shot) {
     v: { x: v * s, y: 0, z: -v * c },
     w: { x: -c * w, y: 0, z: -s * w },              // 滑らずに転がる回転（上向き × 進む向き）
   };
+}
+
+// 再現できる乱数（mulberry32）。種は文字・ピン・残りピン・投げ方から作る。整数演算だけなので環境差が出ない
+function seeded(ch, pinCh, standing, shot) {
+  let h = 2166136261;
+  const mix = n => { h = Math.imul(h ^ n, 16777619) >>> 0; };
+  for (const c of ch + pinCh) mix(c.codePointAt(0));
+  standing.forEach((v, i) => mix(v ? i + 1 : 0));
+  mix(shot.pos + 1000); mix(shot.aim + 1000); mix(shot.power);
+  return () => {
+    h = (h + 0x6D2B79F5) >>> 0;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// 動き出したピンに一度だけ、奥へ向かう勢いを足す（左右・上向き・回転はランダム）
+function kickPins(sim) {
+  sim.pins.forEach((b, i) => {
+    if (!b || sim.kicked[i]) return;
+    const v = b.linvel();
+    const v2 = v.x * v.x + v.y * v.y + v.z * v.z;
+    if (v2 < KICK_SPEED * KICK_SPEED) return;
+    sim.kicked[i] = true;
+    const f = Math.min(1, Math.sqrt(v2) / KICK_FULL) * sim.pin.kick;   // 強く当たったピンほど大きく飛ぶ
+    const r = sim.rand, lerp = ([a, c], u) => (a + (c - a) * u) * f;
+    const back = lerp(KICK.back, r()), side = (r() * 2 - 1) * KICK.side * f, up = lerp(KICK.up, r());
+    b.setLinvel({ x: v.x + side, y: v.y + up, z: v.z - back }, true);
+    const w = b.angvel();
+    const sp = KICK.spin * f;
+    b.setAngvel({ x: w.x - (0.5 + r()) * sp, y: w.y + (r() * 2 - 1) * sp, z: w.z + (r() * 2 - 1) * sp }, true);
+  });
 }
 
 function qmul(a, b) {
@@ -247,6 +287,7 @@ export function stepThrow(sim) {
   if (sim.done) return;
   sim.world.step();
   sim.t += DT;
+  kickPins(sim);
   sim.steps++;
   const t = sim.ball.translation(), v = sim.ball.linvel(), w = sim.ball.angvel();
   if (!sim.dry && t.z < -OIL_END) { sim.dry = true; for (const c of sim.ballColliders) c.setFriction(BALL_DRY_F); }
