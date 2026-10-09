@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字カタパルト</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier2d": "https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-compat@0.21.0/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="bar">
+    <div class="group">
+      <select id="stage" aria-label="ステージ"></select>
+      <button id="restart" class="small" title="やり直す">↺</button>
+    </div>
+    <div class="group" id="ammo" aria-label="残りの弾"></div>
+    <div class="group pick">
+      <input id="char" type="text" value="鬱" maxlength="2" autocomplete="off" aria-label="撃つ文字">
+      <span class="presets">
+        <button data-c="鬱">鬱</button>
+        <button data-c="龍">龍</button>
+        <button data-c="あ">あ</button>
+        <button data-c="〇">〇</button>
+        <button data-c="ー">ー</button>
+      </span>
+    </div>
+    <div class="group" id="stats"></div>
+    <a href="../../" class="home">← メインページへ</a>
+  </div>
+
+  <div id="hint">弾を引っぱって離すと発射。「王」を地面か画面の外に落とせば勝ち！<span class="portrait">（横向きにすると大きく見えます）</span></div>
+
+  <div id="result" hidden>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="next">次のステージ</button>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
