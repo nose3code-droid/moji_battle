@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字とばし</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier3d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="panel">
+    <div class="head">
+      <h1>文字とばし</h1>
+      <a href="../../">文字ころがしレース →</a>
+    </div>
+    <div class="row">
+      <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="文字">
+      <div id="best-box">
+        <small>この字の自己ベスト</small>
+        <b id="best">―</b>
+      </div>
+    </div>
+    <div class="row presets">
+      <button data-c="〇">〇</button>
+      <button data-c="あ">あ</button>
+      <button data-c="一">一</button>
+      <button data-c="木">木</button>
+      <button data-c="S">S</button>
+      <button data-c="・">・</button>
+      <button data-c="鬱">鬱</button>
+    </div>
+    <div id="stats"></div>
+    <button id="top-toggle" class="link">この字の上位10件 ▼</button>
+    <ol id="top" class="list" hidden></ol>
+    <button id="all-toggle" class="link">文字ごとの自己ベスト ▼</button>
+    <div id="all-box" hidden>
+      <ol id="all" class="list"></ol>
+      <button id="reset" class="small danger">記録をすべて消す</button>
+    </div>
+  </div>
+
+  <!-- 発射ゲージ：1回目のタップでパワー、2回目で角度が決まる -->
+  <div id="gauge" hidden>
+    <div class="meter" id="power-meter">
+      <span>パワー</span>
+      <i><b id="power-fill"></b></i>
+      <em id="power-val">0%</em>
+    </div>
+    <div class="meter" id="angle-meter">
+      <span>角度</span>
+      <i><b id="angle-fill"></b></i>
+      <em id="angle-val">0°</em>
+    </div>
+    <button id="tap">タップでパワーを決める</button>
+  </div>
+
+  <div id="hud" hidden>
+    <div id="dist">0.0<small>m</small></div>
+    <div id="hud-sub"></div>
+  </div>
+
+  <div id="result" hidden>
+    <div id="result-ch"></div>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div id="result-info"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="change" class="sub">別の文字</button>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
