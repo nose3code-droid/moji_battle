@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>文字ダンジョン</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- 町（タイトル） -->
+  <section id="town" class="screen">
+    <div class="town-box">
+      <div class="logo" aria-hidden="true">迷</div>
+      <h1>文字ダンジョン</h1>
+      <p class="tagline">町の地下に眠る「辞書の迷宮」。<br>画数1の冒険者「一」と、伝説の1文字を探しに行こう。</p>
+      <div id="town-stats" class="town-stats"></div>
+      <div class="col">
+        <button id="dive" class="big">迷宮へ潜る</button>
+        <button id="open-codex" class="sub">仲間の図鑑</button>
+      </div>
+      <ul class="howto">
+        <li>画数が体力。ダメージを受けるたびに、文字の画が欠けていく</li>
+        <li>敵に重なると攻撃。となりの敵は待機（・）でも自動で殴る</li>
+        <li>倒した字は仲間のカードに。下の札をタップで入れ替え</li>
+        <li>5・10・15階にはぬしがいる。地下15階で伝説の1文字を探せ</li>
+      </ul>
+      <p class="note"><a href="../../">← メインページへ</a></p>
+    </div>
+  </section>
+
+  <!-- 迷宮 -->
+  <section id="game" class="screen" hidden>
+    <header id="top">
+      <a href="../../" class="back">← メインページへ</a>
+      <span id="floor-label"></span>
+      <button id="to-town" class="sub small">町へ</button>
+    </header>
+    <div id="hud">
+      <canvas id="hud-glyph" width="64" height="64"></canvas>
+      <div id="hud-info"></div>
+    </div>
+    <div id="hand" aria-label="手持ちの字"></div>
+    <div id="stage">
+      <canvas id="map"></canvas>
+      <div id="log" aria-live="polite"></div>
+      <div id="banner" hidden></div>
+    </div>
+    <div id="controls">
+      <div id="dpad">
+        <button data-dir="up" aria-label="上">↑</button>
+        <button data-dir="left" aria-label="左">←</button>
+        <button data-act="wait" aria-label="待機（となりの敵を殴る）">・</button>
+        <button data-dir="right" aria-label="右">→</button>
+        <button data-dir="down" aria-label="下">↓</button>
+      </div>
+      <button id="special" class="sp-btn">とくぎ</button>
+    </div>
+  </section>
+
+  <!-- 会話 -->
+  <div id="scene" class="overlay scene" hidden>
+    <div class="dialog">
+      <canvas id="scene-face" width="72" height="72"></canvas>
+      <div class="dialog-body">
+        <div id="scene-name"></div>
+        <div id="scene-text"></div>
+      </div>
+      <button id="scene-skip" class="sub small">スキップ</button>
+      <span class="next" aria-hidden="true">▼</span>
+    </div>
+  </div>
+
+  <!-- 手持ちがいっぱい -->
+  <div id="full" class="overlay" hidden>
+    <div class="box">
+      <h2 id="full-title"></h2>
+      <p class="note">入れ替える字を選ぶ（選んだ字は手放す）</p>
+      <div id="full-list" class="card-list"></div>
+      <button id="full-skip" class="sub">あきらめる</button>
+    </div>
+  </div>
+
+  <!-- 図鑑 -->
+  <div id="codex" class="overlay" hidden>
+    <div class="box wide">
+      <h2>仲間の図鑑 <span id="codex-count"></span></h2>
+      <div id="codex-grid" class="card-list"></div>
+      <div id="codex-detail" class="note"></div>
+      <button id="codex-close" class="sub">とじる</button>
+    </div>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result" class="overlay" hidden>
+    <div class="box">
+      <h2 id="result-title"></h2>
+      <div id="result-body"></div>
+      <div class="col">
+        <button id="again" class="big">もう一度潜る</button>
+        <button id="result-town" class="sub">町へ戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="overlay"><div class="box">フォントを読み込み中…</div></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
