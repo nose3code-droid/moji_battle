@@ -56,20 +56,23 @@ pad.position.set(-0.6, 0.03, 0);
 scene.add(pad);
 
 // 目盛りの文字（"10m" など）をテクスチャにする
-function labelSprite(text, color = '#123', bg = 'rgba(255,255,255,.85)') {
+function labelTexture(text, color, bg, w) {
   const c = document.createElement('canvas');
-  c.width = 256; c.height = 96;
+  c.width = w; c.height = 96;
   const ctx = c.getContext('2d');
   ctx.fillStyle = bg;
-  ctx.beginPath(); ctx.roundRect(8, 8, 240, 80, 24); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(8, 8, w - 16, 80, 24); ctx.fill();
   ctx.fillStyle = color;
   ctx.font = 'bold 56px system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(text, 128, 50);
+  ctx.fillText(text, w / 2, 50, w - 40);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthWrite: false }));
-  s.scale.set(1.6, 0.6, 1);
+  return tex;
+}
+function labelSprite(text, color = '#123', bg = 'rgba(255,255,255,.85)', w = 256) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTexture(text, color, bg, w), depthWrite: false }));
+  s.scale.set(1.6 * w / 256, 0.6, 1);
   return s;
 }
 
@@ -153,18 +156,37 @@ function addTrail(x, y) {
 }
 function clearTrail() { trailN = 0; trailGeo.setDrawRange(0, 0); }
 
-// 自己ベストの旗
-const bestFlag = new THREE.Group();
-const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 2.4), lineMat);
-pole.position.y = 1.2;
-const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), new THREE.MeshStandardMaterial({ color: 0xff9800, side: THREE.DoubleSide }));
-cloth.position.set(0.45, 2.1, 0);
-const bestLabel = labelSprite('ベスト', '#fff', '#ff9800');
-bestLabel.scale.set(1.2, 0.45, 1);
-bestLabel.position.set(0, 2.85, 0);
-bestFlag.add(pole, cloth, bestLabel);
-bestFlag.position.z = -2.2;
-scene.add(bestFlag);
+// ベストの旗。この字のベスト（オレンジ）と全体のベスト（紫）を色と高さを変えて立てる
+const CH_COLOR = '#ff9800', ALL_COLOR = '#8e44ad';
+function makeFlag(color, text, height, z, w) {
+  const flag = new THREE.Group();
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, height), lineMat);
+  pole.position.y = height / 2;
+  const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), new THREE.MeshStandardMaterial({ color, side: THREE.DoubleSide }));
+  cloth.position.set(0.45, height - 0.3, 0);
+  const label = labelSprite(text, '#fff', color, w);
+  label.scale.multiplyScalar(0.75);
+  label.position.set(0, height + 0.45, 0);
+  flag.add(pole, cloth, label);
+  flag.position.z = z;
+  flag.visible = false;
+  flag.userData = { label, color, w, text };
+  scene.add(flag);
+  return flag;
+}
+const bestFlag = makeFlag(CH_COLOR, 'この字のベスト', 2.4, -2.2, 384);
+const allFlag = makeFlag(ALL_COLOR, '全体ベスト', 3.6, -3.2, 384); // 同じ位置でも重ならないよう奥に高く
+function setFlag(flag, x, text) {
+  flag.visible = x != null;
+  if (x == null) return;
+  flag.position.x = x;
+  const u = flag.userData;
+  if (u.text !== text) {
+    u.label.material.map.dispose();
+    u.label.material.map = labelTexture(text, '#fff', u.color, u.w);
+    u.text = text;
+  }
+}
 
 // 地面に落ちる影（高さで薄くなる）
 const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25, depthWrite: false }));
@@ -177,9 +199,16 @@ await RAPIER.init();
 function loadRecords() {
   try { return JSON.parse(localStorage.getItem(RECORD_KEY)) || {}; } catch { return {}; }
 }
-// 記録を足して、上位10件に入った順位（入らなければ 0）と更新前のベストを返す
+// 全体のベスト（すべての文字の中でいちばん遠い記録） { ch, d } または null
+function overallBest(rec = loadRecords()) {
+  let best = null;
+  for (const [ch, l] of Object.entries(rec)) if (l.length && (!best || l[0].d > best.d)) best = { ch, d: l[0].d };
+  return best;
+}
+// 記録を足して、上位10件に入った順位（入らなければ 0）と更新前のベスト（この字・全体）を返す
 function saveRecord(ch, d, p, a) {
   const rec = loadRecords();
+  const prevAll = overallBest(rec);
   const list = rec[ch] || [];
   const prev = list.length ? list[0].d : null;
   const entry = { d, p, a };
@@ -187,7 +216,7 @@ function saveRecord(ch, d, p, a) {
   list.sort((x, y) => y.d - x.d);
   rec[ch] = list.slice(0, TOP_MAX);
   try { localStorage.setItem(RECORD_KEY, JSON.stringify(rec)); } catch { /* 保存できなくても遊べる */ }
-  return { rank: rec[ch].indexOf(entry) + 1, prev };
+  return { rank: rec[ch].indexOf(entry) + 1, prev, prevAll };
 }
 const fmt = d => `${d.toFixed(2)} m`;
 
@@ -195,18 +224,19 @@ function renderRecords(highlight = null) {
   const ch = currentChar();
   const rec = loadRecords();
   const list = rec[ch] || [];
+  const top = overallBest(rec);
   $('best').textContent = list.length ? fmt(list[0].d) : '―';
+  $('best-all').textContent = top ? fmt(top.d) : '―';
+  $('best-all-ch').textContent = top ? `（${top.ch}）` : '';
   $('top').innerHTML = list.length
-    ? list.map((e, i) => `<li class="${highlight && e.d === highlight.d && e.p === highlight.p && e.a === highlight.a ? 'me' : ''}"><span>${i + 1}.</span><em>${fmt(e.d)}</em><i>パワー ${e.p}%・角度 ${e.a}°</i></li>`).join('')
+    ? list.map((e, i) => `<li class="${i === 0 ? 'ch-best ' : ''}${highlight && e.d === highlight.d && e.p === highlight.p && e.a === highlight.a ? 'me' : ''}"><span>${i + 1}.</span><em>${fmt(e.d)}</em><i>パワー ${e.p}%・角度 ${e.a}°</i></li>`).join('')
     : '<li class="none">まだ記録がありません</li>';
   const all = Object.entries(rec).filter(([, l]) => l.length).sort((a, b) => b[1][0].d - a[1][0].d);
   $('all').innerHTML = all.length
-    ? all.map(([c, l], i) => `<li class="${c === ch ? 'me' : ''}"><span>${i + 1}.</span><b>${esc(c)}</b><i>${l.length} 回</i><em>${fmt(l[0].d)}</em></li>`).join('')
+    ? all.map(([c, l], i) => `<li class="${i === 0 ? 'all-best ' : ''}${c === ch ? 'me' : ''}"><span>${i + 1}.</span><b>${esc(c)}</b><i>${l.length} 回</i><em>${fmt(l[0].d)}</em></li>`).join('')
     : '<li class="none">まだ記録がありません</li>';
-  if (list.length) {
-    bestFlag.visible = true;
-    bestFlag.position.x = list[0].d;
-  } else bestFlag.visible = false;
+  setFlag(bestFlag, list.length ? list[0].d : null, `「${ch}」のベスト`);
+  setFlag(allFlag, top ? top.d : null, `全体ベスト「${top?.ch ?? ''}」`);
 }
 const esc = s => String(s).replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
 
@@ -351,8 +381,9 @@ function fire(p, a) {
 function finish() {
   const d = shotDistance(shot);
   const ch = shape.ch;
-  const { rank, prev } = saveRecord(ch, d, power, angle);
+  const { rank, prev, prevAll } = saveRecord(ch, d, power, angle);
   const isBest = prev == null || d > prev;
+  const isAllBest = prevAll == null || d > prevAll.d;
   state = 'result';
   document.body.classList.remove('flying');
   $('hud').hidden = true;
@@ -364,6 +395,11 @@ function finish() {
   sub.textContent = isBest
     ? (prev == null ? '初記録！' : `自己ベスト更新！（前回 ${fmt(prev)}）`)
     : (rank ? `この字の ${rank} 位（自己ベスト ${fmt(prev)}）` : `自己ベスト ${fmt(prev)}`);
+  const allSub = $('result-all');
+  allSub.className = isAllBest ? 'new' : '';
+  allSub.textContent = isAllBest
+    ? (prevAll == null ? '全体ベスト！' : `全体ベスト更新！（前回 ${fmt(prevAll.d)}「${prevAll.ch}」）`)
+    : `全体ベスト ${fmt(prevAll.d)}「${prevAll.ch}」まで あと ${(prevAll.d - d).toFixed(2)} m`;
   $('result-info').textContent = `パワー ${power}%・角度 ${angle}°・最高 ${shot.maxHeight.toFixed(1)}m・${shot.elapsed.toFixed(1)} 秒`;
   renderRecords({ d, p: power, a: angle });
 }

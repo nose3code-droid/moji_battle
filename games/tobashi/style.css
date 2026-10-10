@@ -22,9 +22,15 @@ button.link { display: block; margin-top: 6px; padding: 2px 0; background: none;
 h1 { margin: 0 0 6px; font-size: 18px; color: #123; }
 .head a { font-size: 12px; color: #2b7de9; text-decoration: none; }
 #char { width: 64px; height: 52px; font-size: 30px; text-align: center; border: 2px solid #888; border-radius: 8px; }
-#best-box { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 0 6px; }
-#best-box small { font-size: 12px; color: #666; }
-#best-box b { font-size: 24px; color: #c25b00; }
+/* この字のベスト＝オレンジ、全体のベスト＝紫（地面の旗と同じ色） */
+:root { --ch-best: #c25b00; --ch-best-bg: #fff1dc; --all-best: #7b2fa8; --all-best-bg: #f3e8fa; }
+#best-box { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; }
+#best-box .best { display: flex; align-items: baseline; gap: 6px; padding: 1px 8px; border-radius: 6px; border-left: 4px solid; }
+#best-box .best small { width: 7.5em; flex: none; white-space: nowrap; font-size: 12px; color: #555; }
+#best-box .best b { font-size: 18px; white-space: nowrap; }
+#best-box .best span { margin-left: auto; font-size: 13px; white-space: nowrap; }
+#best-box .ch { background: var(--ch-best-bg); border-color: #ff9800; color: var(--ch-best); }
+#best-box .all { background: var(--all-best-bg); border-color: #8e44ad; color: var(--all-best); }
 .presets button { flex: 1; padding: 6px 0; background: #eef; color: #223; font-size: 18px; }
 .presets button.on { background: #223a5e; color: #fff; }
 #stats { font-size: 13px; line-height: 1.5; color: #333; }
@@ -41,6 +47,8 @@ h1 { margin: 0 0 6px; font-size: 18px; color: #123; }
 .list i { flex: 1; font-style: normal; color: #667; font-size: 12px; }
 .list em { font-style: normal; font-weight: bold; }
 .list .none { color: #888; }
+.list li.ch-best em { color: var(--ch-best); }
+.list li.all-best em { color: var(--all-best); }
 /* 飛んでいる間は小さくして画面を広く使う */
 body.flying #panel { opacity: .35; pointer-events: none; }
 
@@ -79,8 +87,10 @@ body.flying #panel { opacity: .35; pointer-events: none; }
 }
 #result-ch { font-size: 14px; color: #666; }
 #result-title { font-size: 40px; font-weight: bold; color: #c25b00; line-height: 1.2; }
-#result-sub { margin: 4px 0; font-size: 15px; font-weight: bold; color: #2b7de9; min-height: 1em; }
-#result-sub.new { color: #e53935; }
+#result-sub { margin: 4px 0; font-size: 15px; font-weight: bold; color: var(--ch-best); min-height: 1em; }
+#result-sub.new { font-size: 16px; }
+#result-all { margin: 0 0 4px; font-size: 14px; font-weight: bold; color: var(--all-best); }
+#result-all.new { font-size: 16px; }
 #result-info { margin-bottom: 10px; font-size: 13px; color: #555; }
 #result .row button { flex: 1; font-size: 18px; padding: 12px 0; }
 
