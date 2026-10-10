@@ -65,7 +65,9 @@
       { path: 'games/tobashi/',   glyph: '一', name: '文字とばし',         desc: 'パワーと角度を決めて飛ばし、何メートル飛ぶかを競う' },
       { path: 'games/gattai/',    glyph: '森', name: '文字がったい',       desc: '同じ字をぶつけて合体。木→林→森と大きな漢字を目指す' },
       { path: 'games/bowling/',   glyph: '球', name: '文字ボウリング',     desc: '文字を転がしてピンを倒す。10フレームでハイスコアを狙え' },
-      { path: 'games/library/',   glyph: '鬱', name: '夜の文字館',         desc: '閉館後の図書館で大きな文字から隠れる、ステルスかくれんぼ。しおりを集めて出口へ' },
+      { path: 'games/escape/',    glyph: 'あ', name: 'あ、脱出する',       desc: '閉じ込められた「あ」が5つの部屋を抜けて外へ。物理パズルの脱出ストーリー' },
+      { path: 'games/dungeon/',   glyph: '迷', name: '文字ダンジョン',     desc: '画数が体力の冒険者「一」が辞書の迷宮へ。倒した字は仲間になる' },
+      { path: 'games/library/',   glyph: '館', name: '夜の文字館',         desc: '閉館後の図書館で「鬱」から逃げながら出口を探す、ほんのりホラー' },
     ];
 
     const esc = s => s.replace(/[&<>"']/g, c => `&#${c.charCodeAt(0)};`);
