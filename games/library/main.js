@@ -4,7 +4,9 @@ import { FONT_URL } from '../../config.js';
 
 // ---------- 定数 ----------
 const SAVE_KEY = 'moji-library-save-v2';
-const N_SHIORI = 5;           // しおりの総数
+const N_SHIORI = 6;           // しおりの総数
+// ★ふつうのレンタルサーバーに置いたら保存したいとき：save.php を同じ場所に置き、下に './save.php' を入れる（空のままなら端末内の localStorage だけ）
+const SERVER_SAVE_URL = '';
 const FONT_STACK = "'NotoJPLib','Hiragino Sans','Yu Gothic','Noto Sans CJK JP','WenQuanYi Zen Hei',sans-serif";
 const WALK = 2.8, RUN = 4.8;  // プレイヤー速度（マス/秒）
 const NOISE_WALK = 2.2, NOISE_RUN = 7; // 足音の届く半径
@@ -12,7 +14,7 @@ const T = 40;                 // 地図キャッシュ 1 マスのピクセル�
 
 // ---------- マップ ----------
 // # 壁  B 本棚(視界を遮る)  D 机(低い)  H ロッカー(かくれる)  L 館長室の扉  E 出口
-// P スタート  1〜5 しおり  K 出口のかぎ
+// P スタート  1〜6 しおり  K 出口のかぎ
 // 階段：S(1F→B1F) U(B1F→1F) T(上の階へ) V(下の階へ)
 // 難易度は階ごとのパラメータで少しずつ上がる：light 懐中電灯の半径 / sight 視界の距離 / fov 視野角(片側rad) /
 //   hear 足音への敏感さ / hide かくれ中でも気づく距離 / lose 見失うまでの秒数 / patrolSpeed・chaseSpeed 速さ
@@ -117,12 +119,39 @@ const LEVELS = [
       '#......D.BB...BBBB..BB.....#',
       '#............H......BB..BB.#',
       '#.....BBB...D.....D...H.BB.#',
-      '#V.........................#',
+      '#V........................T#',
       '############################',
     ],
     patrol: [[2, 3], [7, 4], [12, 3], [20, 5], [25, 6], [24, 10], [18, 13], [15, 10], [10, 8], [5, 10], [4, 14], [10, 14], [17, 16], [26, 15]],
     enemy: [14, 9], patrolSpeed: 2.6, chaseSpeed: 4.7,
     light: 4.4, sight: 8.0, fov: 1.22, hear: 1.35, hide: 1.7, lose: 6,
+    extra: [],
+  },
+  {
+    name: '4F 時計塔',
+    rows: [
+      '############################',
+      '#..........................#',
+      '#..........................#',
+      '#..BBBBB.BBBBB.BBBBBBBBBB..#',
+      '#..B......H.............B..#',
+      '#H.B....................B..#',
+      '#..B..BBBBBBBB.BBBBBBB..B..#',
+      '#..B..B.................B..#',
+      '#.....B...D..6.......B..B..#',
+      '#..B.............D...B.....#',
+      '#..B..B......H.......B..B..#',
+      '#..B..B.BBBBBBBBBBBBBB..B..#',
+      '#..B....................B.H#',
+      '#..B.............H......B..#',
+      '#..BBBBBBBBBBBBBBB.BBBBBB..#',
+      '#..........................#',
+      '#V..H......................#',
+      '############################',
+    ],
+    patrol: [[2, 2], [25, 2], [25, 9], [25, 15], [13, 15], [2, 15], [2, 8], [8, 4], [13, 5], [19, 4], [7, 9], [13, 9], [20, 8]],
+    enemy: [13, 5], patrolSpeed: 2.8, chaseSpeed: 4.75,
+    light: 4.1, sight: 8.5, fov: 1.3, hear: 1.5, hide: 1.9, lose: 7,
     extra: [],
   },
 ];
@@ -132,6 +161,7 @@ const STAIRS = {
   '0S': [1, 'U', 0], '1U': [0, 'S', 0],
   '0T': [2, 'V', 3], '2V': [0, 'T', 0],
   '2T': [3, 'V', 4], '3V': [2, 'T', 0],
+  '3T': [4, 'V', 5], '4V': [3, 'T', 0],
 };
 
 // ---------- 会話 ----------
@@ -165,15 +195,20 @@ const TALK = {
     [H, 'この上にも、まだ階段がある。屋根裏かな……'],
   ],
   shiori4: [
-    [H, '5まいめ！ 「ほんとうは、いっしょに あそびたかった」'],
-    ['', 'しおりが5まい、ぱあっと光って――気づくと、館長室のとびらの前にいた。'],
+    [H, '5まいめ。「鬱は、ひとりで、ずっと時計の音をきいていた」'],
+    ['', 'まだ上に階段がある。屋根裏のいちばん奥だ。'],
+  ],
+  shiori5: [
+    [H, '6まいめ！ 「ほんとうは、いっしょに あそびたかった」'],
+    ['', 'しおりが6まい、ぱあっと光って――気づくと、館長室のとびらの前にいた。'],
   ],
   up2: [[H, '2Fの古文書室。ほこりっぽくて、どこか息がつまる……']],
   up3: [[H, '屋根裏だ。荷物のかげが多くて、鬱の足音もよく響く……']],
+  up4: [[H, '時計塔だ。かちこち、かちこち……鬱の気配が、いちばん濃い。']],
   down: [[H, '地下書庫への階段。ひんやりする……']],
   up: [[H, 'もどってきた。']],
   door: [
-    ['', '5まいのしおりをとびらのみぞにはめると、カチッと音がしてとびらが開いた。'],
+    ['', '6まいのしおりをとびらのみぞにはめると、カチッと音がしてとびらが開いた。'],
   ],
   key: [
     [H, '机の上に出口のかぎがあった！ あとは出口へ。'],
@@ -277,14 +312,55 @@ function beep(f, dur, type = 'sine', gain = 0.12, f2 = f) {
 
 // ---------- セーブ ----------
 function save() {
+  S.updatedAt = Date.now();
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* 保存できなくても続行 */ }
+  serverSaveSoon();
+}
+// セーブデータとして使えるか確認。しおりの数が増える前の古いデータは、足りない分を未取得にして引き継ぐ
+function validSave(d) {
+  if (!d || !Array.isArray(d.got) || d.got.length > N_SHIORI || !d.cp || !LEVELS[d.cp.level] || !LEVELS[d.level]) return null;
+  while (d.got.length < N_SHIORI) d.got.push(false);
+  d.got = d.got.map(Boolean);
+  return d;
 }
 function loadSave() {
+  try { return validSave(JSON.parse(localStorage.getItem(SAVE_KEY))); } catch (e) { return null; }
+}
+
+// ---------- サーバー保存（SERVER_SAVE_URL が空なら何もしない） ----------
+// 端末ごとのひみつの ID（推測されにくいランダム値）をキーに、save.php へ JSON を送る・受け取る
+function playerId() {
   try {
-    const d = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if (d && Array.isArray(d.got) && d.got.length === N_SHIORI && d.cp) return d;
-  } catch (e) { /* 壊れていたら無視 */ }
-  return null;
+    let id = localStorage.getItem('moji-library-id');
+    if (!/^[a-f0-9-]{36}$/.test(id || '')) {
+      id = crypto.randomUUID();
+      localStorage.setItem('moji-library-id', id);
+    }
+    return id;
+  } catch (e) { return null; }
+}
+let serverTimer = 0;
+function serverSaveSoon() { // 続けて保存しても 1.5 秒ごとに 1 回だけ送る
+  if (!SERVER_SAVE_URL || serverTimer) return;
+  serverTimer = setTimeout(() => {
+    serverTimer = 0;
+    const id = playerId();
+    if (!id) return;
+    fetch(SERVER_SAVE_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+      body: JSON.stringify({ id, data: S }),
+    }).catch(() => { /* ネットワークエラーでも遊びは続ける */ });
+  }, 1500);
+}
+async function serverLoad() {
+  const id = SERVER_SAVE_URL && playerId();
+  if (!id) return null;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 3000);
+    const res = await fetch(`${SERVER_SAVE_URL}?id=${id}`, { signal: ctl.signal, cache: 'no-store' });
+    if (!res.ok) return null;
+    return validSave((await res.json()).data);
+  } catch (e) { return null; }
 }
 
 // ---------- レベル読み込み ----------
@@ -297,7 +373,7 @@ function loadLevel(i) {
   items = [];
   for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
     const c = grid[y][x];
-    if ('12345'.includes(c)) { items.push({ kind: 's', n: +c - 1, x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
+    if ('123456'.includes(c)) { items.push({ kind: 's', n: +c - 1, x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
     else if (c === 'K') { items.push({ kind: 'k', x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
     else if (c === 'P') grid[y][x] = '.';
   }
@@ -464,7 +540,7 @@ function pickup(it) {
     checkpoint(it.x, it.y);
     updateHud();
     const n = S.got.filter(Boolean).length;
-    if (n === N_SHIORI) say('shiori4', warpToDoor); else say('shiori' + (n - 1));
+    if (n === N_SHIORI) say('shiori5', warpToDoor); else say('shiori' + (n - 1));
   } else {
     S.key = true;
     checkpoint(it.x, it.y);
@@ -864,7 +940,10 @@ async function loadFont() {
 async function boot() {
   resize();
   requestAnimationFrame(frame);
-  const d = loadSave();
+  $('btn-continue').disabled = true; // サーバーのセーブを確認するまで押せない
+  let d = loadSave();
+  const remote = await serverLoad();
+  if (remote && (!d || (remote.updatedAt || 0) > (d.updatedAt || 0))) d = remote; // 新しいほうを使う
   $('btn-continue').disabled = !d || d.ended;
   $('btn-new').onclick = () => { audioStart(); newGame(); };
   $('btn-continue').onclick = () => { audioStart(); continueGame(d); };
