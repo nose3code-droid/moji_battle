@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>なぞり魔法</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <span id="stage-name"></span>
+    <div class="btns">
+      <button id="retry">やり直し</button>
+      <button id="stages">面</button>
+    </div>
+  </header>
+
+  <div id="field-wrap">
+    <canvas id="field"></canvas>
+    <div id="ring" title="相性の輪（矢印の元が先に強い）"></div>
+    <div id="hud">
+      <div id="h-hearts"></div>
+      <div>スコア <b id="h-score">0</b></div>
+      <div id="h-prog"></div>
+    </div>
+    <div id="toast"></div>
+  </div>
+
+  <div id="elems"></div>
+
+  <div id="pad-row">
+    <button id="b-clear" class="side">消す</button>
+    <div id="pad-wrap">
+      <canvas id="pad"></canvas>
+      <div id="pad-info"></div>
+    </div>
+    <button id="b-cast" class="side">唱える！</button>
+  </div>
+
+  <div id="talk" hidden>
+    <div id="talk-av" class="glyph"></div>
+    <div id="talk-body"><b id="talk-name"></b><p id="talk-text"></p></div>
+    <span id="talk-next">▶</span>
+  </div>
+
+  <div id="title" class="card">
+    <div class="big glyph"><span style="color:#ff5a1f">火</span><span style="color:#339af0">水</span><span style="color:#fcc419">雷</span><span style="color:#e0b300">光</span><span style="color:#9c5de8">闇</span></div>
+    <h1>なぞり魔法</h1>
+    <div id="lead">魔法学校の見習い「字」。魔法は、漢字を正しくなぞって唱えるもの。<br>火・水・雷・光・闇――五つの字で町の魔物を退治し、五つの力がそろわないと倒せない大魔王に挑もう。</div>
+    <p class="hint">下の魔法陣に出る薄い字を、指／マウスでなぞって「唱える！」。<br>精度が高いほど威力が大きい（画数順は問いません）。<br>字のボタンで魔法を切り替え。相性の輪：水→火→闇→光→雷→水（→ が「強い」。弱点は ×2、逆は ×0.5）。<br>弱点以外では「結界」で倒しきれません。弱点の字でトドメを！<br>キー：1〜5 魔法 / Enter 唱える / Esc 消す</p>
+    <button id="start" disabled>読み込み中…</button>
+    <button id="continue" hidden>つづきから</button>
+    <button id="to-select" class="sub">面をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <div id="select" class="card" hidden>
+    <h2>面をえらぶ</h2>
+    <div id="stage-grid"></div>
+    <button id="select-close" class="sub">もどる</button>
+  </div>
+
+  <div id="result" class="card" hidden>
+    <h2 id="r-title"></h2>
+    <p id="r-info"></p>
+    <button id="r-next">つぎの面へ ▶</button>
+    <button id="r-again" class="sub">もう一度</button>
+    <button id="r-select" class="sub">面をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
