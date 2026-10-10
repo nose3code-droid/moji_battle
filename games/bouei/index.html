@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>五属性の守り</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <header>
+      <a href="../../" class="back">← メインページへ</a>
+      <h1>五属性の守り</h1>
+      <button id="btn-maps" class="sub">マップ選択</button>
+    </header>
+
+    <!-- 相性の輪：矢印の先の属性に強い（与えるダメージ2倍）。常に表示 -->
+    <div id="cycle" aria-label="属性の相性の輪"></div>
+
+    <div id="hud">
+      <div class="stat">資金 <b id="money">0</b></div>
+      <div class="stat">ライフ <b id="lives">0</b></div>
+      <div class="stat">波 <b id="wave">0</b>/10</div>
+      <div id="shrines" title="2波ごとに祠が灯る"></div>
+    </div>
+
+    <div id="wrap">
+      <canvas id="view" width="640" height="640"></canvas>
+      <div id="banner"></div>
+      <div id="paused" hidden>一時停止中</div>
+
+      <div id="talk" hidden>
+        <div id="talk-ch"></div>
+        <div id="talk-main"><b id="talk-name"></b><p id="talk-text"></p></div>
+        <i id="talk-next">▼</i>
+      </div>
+
+      <div id="panel" hidden>
+        <div id="panel-title"></div>
+        <div id="panel-sub"></div>
+        <div id="panel-body"></div>
+      </div>
+    </div>
+
+    <div id="palette"></div>
+    <div id="sel"><span class="hint">マスをタップして、下の字で砲台を建てよう</span></div>
+
+    <div id="ctl">
+      <button id="btn-go">波を始める</button>
+      <button id="btn-speed" class="sub">倍速 ×1</button>
+      <button id="btn-pause" class="sub">一時停止</button>
+      <button id="btn-retry" class="sub">やり直し</button>
+    </div>
+    <div id="msg"></div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
