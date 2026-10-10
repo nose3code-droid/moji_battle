@@ -3,16 +3,19 @@
 import { FONT_URL } from '../../config.js';
 
 // ---------- 定数 ----------
-const SAVE_KEY = 'moji-library-save-v1';
+const SAVE_KEY = 'moji-library-save-v2';
+const N_SHIORI = 5;           // しおりの総数
 const FONT_STACK = "'NotoJPLib','Hiragino Sans','Yu Gothic','Noto Sans CJK JP','WenQuanYi Zen Hei',sans-serif";
-const LIGHT_R = 5.2;          // 懐中電灯の半径（マス）
 const WALK = 2.8, RUN = 4.8;  // プレイヤー速度（マス/秒）
 const NOISE_WALK = 2.2, NOISE_RUN = 7; // 足音の届く半径
 const T = 40;                 // 地図キャッシュ 1 マスのピクセル数
 
 // ---------- マップ ----------
 // # 壁  B 本棚(視界を遮る)  D 机(低い)  H ロッカー(かくれる)  L 館長室の扉  E 出口
-// P スタート  1 2 3 しおり  K 出口のかぎ  S 地下への階段  U 上への階段
+// P スタート  1〜5 しおり  K 出口のかぎ
+// 階段：S(1F→B1F) U(B1F→1F) T(上の階へ) V(下の階へ)
+// 難易度は階ごとのパラメータで少しずつ上がる：light 懐中電灯の半径 / sight 視界の距離 / fov 視野角(片側rad) /
+//   hear 足音への敏感さ / hide かくれ中でも気づく距離 / lose 見失うまでの秒数 / patrolSpeed・chaseSpeed 速さ
 const LEVELS = [
   {
     name: '1F 閲覧室',
@@ -33,11 +36,12 @@ const LEVELS = [
       '#.................L........#',
       '#..DD......DD.....#.....K..#',
       '#.2...............#........#',
-      '#S......H.........#........#',
+      '#S......H......T..#........#',
       '############################',
     ],
     patrol: [[3, 3], [25, 3], [25, 5], [13, 7], [25, 9], [14, 13], [3, 15], [3, 9], [3, 5]],
     enemy: [13, 7], patrolSpeed: 1.8, chaseSpeed: 4.0,
+    light: 5.2, sight: 6.5, fov: 0.96, hear: 1.0, hide: 1.2, lose: 4,
     extra: [[24, 5, 'H'], [14, 11, 'H']],
   },
   {
@@ -64,9 +68,71 @@ const LEVELS = [
     ],
     patrol: [[13, 1], [25, 3], [2, 5], [25, 7], [2, 9], [25, 11], [2, 13], [25, 15], [13, 15], [2, 11], [13, 5]],
     enemy: [13, 9], patrolSpeed: 2.0, chaseSpeed: 4.3,
+    light: 5.0, sight: 7.0, fov: 1.05, hear: 1.1, hide: 1.3, lose: 4.5,
+    extra: [],
+  },
+  {
+    name: '2F 古文書室',
+    rows: [
+      '############################',
+      '#V....B........B........T..#',
+      '#.BBB.B.BBBBBB.B.BBBBBB.BB.#',
+      '#.....B..H.....B.........H.#',
+      '#.BBB.BBBBBB.BBBBBBB.BBBBB.#',
+      '#............B.............#',
+      '#.BBBBBB.BBBB.BBBBBBBB.BBB.#',
+      '#.....H....................#',
+      '#.BBB.BBBBBBBBB.BBBBBB.BBB.#',
+      '#.B.....B..........B.....B.#',
+      '#.B.BBB.B.BBBBBBBB.B.BBBBB.#',
+      '#...........H..............#',
+      '#.BBBBBB.BBBBB.BBBBBBB.BBB.#',
+      '#..........................#',
+      '#.BBBB.BBBBBBBB.BBBBBBB.B..#',
+      '#....H.....................#',
+      '#.........................4#',
+      '############################',
+    ],
+    patrol: [[3, 3], [11, 5], [25, 5], [25, 7], [10, 9], [4, 9], [11, 11], [24, 11], [24, 13], [10, 13], [3, 15], [24, 15]],
+    enemy: [14, 9], patrolSpeed: 2.3, chaseSpeed: 4.5,
+    light: 4.7, sight: 7.5, fov: 1.12, hear: 1.2, hide: 1.5, lose: 5,
+    extra: [],
+  },
+  {
+    name: '3F 屋根裏',
+    rows: [
+      '############################',
+      '#.........................5#',
+      '#..BBB...BB....BBBB..D.....#',
+      '#..BBB...BB....BBBB...BBB..#',
+      '#........BB........H..BBB..#',
+      '#H......D....D............D#',
+      '#....BB...........BB.......#',
+      '#....BB....BBBB...BB......H#',
+      '#....BB....BBBB...BB...BBB.#',
+      '#.D.......D.....H......BBB.#',
+      '#.......H........D....D....#',
+      '#..BBB...BB..............D.#',
+      '#..BBB...BB...BBBB..BB.....#',
+      '#......D.BB...BBBB..BB.....#',
+      '#............H......BB..BB.#',
+      '#.....BBB...D.....D...H.BB.#',
+      '#V.........................#',
+      '############################',
+    ],
+    patrol: [[2, 3], [7, 4], [12, 3], [20, 5], [25, 6], [24, 10], [18, 13], [15, 10], [10, 8], [5, 10], [4, 14], [10, 14], [17, 16], [26, 15]],
+    enemy: [14, 9], patrolSpeed: 2.6, chaseSpeed: 4.7,
+    light: 4.4, sight: 8.0, fov: 1.22, hear: 1.35, hide: 1.7, lose: 6,
     extra: [],
   },
 ];
+
+// 階段のつながり：'階+文字' → [行き先の階, 行き先で出てくる階段の文字, 必要なしおりの数]
+const STAIRS = {
+  '0S': [1, 'U', 0], '1U': [0, 'S', 0],
+  '0T': [2, 'V', 3], '2V': [0, 'T', 0],
+  '2T': [3, 'V', 4], '3V': [2, 'T', 0],
+};
 
 // ---------- 会話 ----------
 const H = 'ひ', U = '鬱';
@@ -92,12 +158,22 @@ const TALK = {
   shiori2: [
     [H, '3まいめ。「わたしは うつ。本の中はさむくて、出てきてしまった」'],
     [H, '……こわい文字じゃ、なかったのかも。'],
-    ['', '3まいのしおりをあつめた。館長室のとびら（1Fの右下）へ行ってみよう。'],
+    ['', '3まいあつめたら、1Fの下のほうで、上へのぼる階段（▲）が使えるようになった気がする。'],
   ],
+  shiori3: [
+    [H, '4まいめ。「おとなの字は、いそがしそうで、こわかった」'],
+    [H, 'この上にも、まだ階段がある。屋根裏かな……'],
+  ],
+  shiori4: [
+    [H, '5まいめ！ 「ほんとうは、いっしょに あそびたかった」'],
+    ['', 'しおりが5まい、ぱあっと光って――気づくと、館長室のとびらの前にいた。'],
+  ],
+  up2: [[H, '2Fの古文書室。ほこりっぽくて、どこか息がつまる……']],
+  up3: [[H, '屋根裏だ。荷物のかげが多くて、鬱の足音もよく響く……']],
   down: [[H, '地下書庫への階段。ひんやりする……']],
-  up: [[H, '1Fにもどってきた。']],
+  up: [[H, 'もどってきた。']],
   door: [
-    ['', '3まいのしおりをとびらのみぞにはめると、カチッと音がしてとびらが開いた。'],
+    ['', '5まいのしおりをとびらのみぞにはめると、カチッと音がしてとびらが開いた。'],
   ],
   key: [
     [H, '机の上に出口のかぎがあった！ あとは出口へ。'],
@@ -133,7 +209,7 @@ const mapCv = document.createElement('canvas'); // 地図キャッシュ
 const mctx = mapCv.getContext('2d');
 const $ = id => document.getElementById(id);
 
-let S = { level: 0, got: [false, false, false], doorOpen: false, key: false, cp: null, met: false, caught: 0, ended: false };
+let S = { level: 0, got: Array(N_SHIORI).fill(false), doorOpen: false, key: false, cp: null, met: false, caught: 0, ended: false };
 let grid = [], gw = 0, gh = 0, items = [];
 const player = { x: 1.5, y: 1.5, moving: false, run: false, hidden: false, face: 0 };
 const enemy = { x: 0, y: 0, face: 0, mode: 'patrol', wp: 0, path: [], pi: 0, repath: 0, alert: 0, lose: 0, wait: 0, look: 0, last: null, calm: false };
@@ -206,7 +282,7 @@ function save() {
 function loadSave() {
   try {
     const d = JSON.parse(localStorage.getItem(SAVE_KEY));
-    if (d && Array.isArray(d.got) && d.cp) return d;
+    if (d && Array.isArray(d.got) && d.got.length === N_SHIORI && d.cp) return d;
   } catch (e) { /* 壊れていたら無視 */ }
   return null;
 }
@@ -221,7 +297,7 @@ function loadLevel(i) {
   items = [];
   for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) {
     const c = grid[y][x];
-    if ('123'.includes(c) && c !== '.') { items.push({ kind: 's', n: +c - 1, x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
+    if ('12345'.includes(c)) { items.push({ kind: 's', n: +c - 1, x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
     else if (c === 'K') { items.push({ kind: 'k', x: x + .5, y: y + .5 }); grid[y][x] = '.'; }
     else if (c === 'P') grid[y][x] = '.';
   }
@@ -236,8 +312,7 @@ function resetEnemy() {
   Object.assign(enemy, { mode: 'patrol', wp: 0, path: [], pi: 0, repath: 0, alert: 0, lose: 0, wait: 0, look: 0, last: null, calm: false });
 }
 function spawnAt(x, y) { player.x = x; player.y = y; rings.length = 0; }
-function levelStart(i) { // 階段を降りた／上った直後の位置
-  const c = i === 1 ? 'U' : 'S';
+function levelStart(c) { // 階段の文字 c の横（階段を使った直後の位置）
   for (let y = 0; y < gh; y++) for (let x = 0; x < gw; x++) if (grid[y][x] === c) {
     for (const [dx, dy] of [[1, 0], [0, -1], [0, 1], [-1, 0]]) if (!solidAt(x + dx, y + dy)) return [x + dx + .5, y + dy + .5];
   }
@@ -351,15 +426,15 @@ function toast(msg) {
 
 // ---------- ゲームの流れ ----------
 function newGame() {
-  S = { level: 0, got: [false, false, false], doorOpen: false, key: false, cp: null, met: false, caught: 0, ended: false };
+  S = { level: 0, got: Array(N_SHIORI).fill(false), doorOpen: false, key: false, cp: null, met: false, caught: 0, ended: false };
   if (params.has('give')) { // テスト用の近道：?give=3 でしおり全部＋とびら開放
     const n = +params.get('give');
-    for (let i = 0; i < Math.min(3, n); i++) S.got[i] = true;
-    if (n >= 3) S.doorOpen = true;
+    for (let i = 0; i < Math.min(N_SHIORI, n); i++) S.got[i] = true;
+    if (n >= N_SHIORI) S.doorOpen = true;
   }
-  if (params.has('level')) S.level = +params.get('level') ? 1 : 0;
+  if (params.has('level')) S.level = Math.max(0, Math.min(LEVELS.length - 1, +params.get('level') || 0));
   loadLevel(S.level);
-  const p = S.level === 0 ? [1.5, 1.5] : levelStart(1);
+  const p = S.level === 0 ? [1.5, 1.5] : levelStart(S.level === 1 ? 'U' : 'V');
   spawnAt(p[0], p[1]);
   S.cp = { level: S.level, x: p[0], y: p[1] };
   save();
@@ -388,13 +463,22 @@ function pickup(it) {
     S.got[it.n] = true;
     checkpoint(it.x, it.y);
     updateHud();
-    say('shiori' + (S.got.filter(Boolean).length - 1));
+    const n = S.got.filter(Boolean).length;
+    if (n === N_SHIORI) say('shiori4', warpToDoor); else say('shiori' + (n - 1));
   } else {
     S.key = true;
     checkpoint(it.x, it.y);
     updateHud();
     say('key');
   }
+}
+// 最後のしおりを手にしたら、館長室のとびらの前へ（長い道のりを戻らなくていいように）
+function warpToDoor() {
+  loadLevel(0);
+  spawnAt(17.5, 13.5);
+  stairLock = true;
+  checkpoint(player.x, player.y);
+  updateHud();
 }
 function caught() {
   mode = 'caught'; caughtT = 0; S.caught++;
@@ -425,8 +509,8 @@ function updateHud() {
   const n = S.got.filter(Boolean).length;
   $('goal').textContent = S.key ? '出口（1Fの左はし）へ！'
     : S.doorOpen ? '館長室のかぎをとろう'
-    : n >= 3 ? '館長室のとびら（1Fの右下）へ'
-    : `しおりをさがそう（${n}/3）`;
+    : n >= N_SHIORI ? '館長室のとびら（1Fの右下）へ'
+    : `しおりをさがそう（${n}/${N_SHIORI}）`;
 }
 
 // ---------- 更新 ----------
@@ -468,17 +552,23 @@ function update(dt) {
   for (const it of items.slice()) if (Math.hypot(it.x - player.x, it.y - player.y) < 0.65) { pickup(it); if (dialog) return; }
   doorMsgT -= dt;
   const px = Math.floor(player.x), py = Math.floor(player.y);
-  if (tile !== 'S' && tile !== 'U') stairLock = false;
-  if (!stairLock && (tile === 'S' || tile === 'U')) {
-    const to = tile === 'S' ? 1 : 0;
-    loadLevel(to);
-    const q = levelStart(to);
-    spawnAt(q[0], q[1]);
-    stairLock = true;
-    checkpoint(player.x, player.y);
-    updateHud();
-    say(to === 1 ? 'down' : 'up');
-    return;
+  const st = STAIRS[S.level + tile];
+  if (!st) stairLock = false;
+  if (!stairLock && st) {
+    const [to, arrive, need] = st;
+    if (S.got.filter(Boolean).length < need) {
+      if (doorMsgT <= 0) { doorMsgT = 3; toast(`階段の先はまだ入れない（しおり ${S.got.filter(Boolean).length}/${need}）`); }
+    } else {
+      const from = S.level;
+      loadLevel(to);
+      const q = levelStart(arrive);
+      spawnAt(q[0], q[1]);
+      stairLock = true;
+      checkpoint(player.x, player.y);
+      updateHud();
+      say(to > from ? (to === 1 ? 'down' : 'up' + to) : 'up');
+      return;
+    }
   }
   const near = c => { for (let y = py - 1; y <= py + 1; y++) for (let x = px - 1; x <= px + 1; x++) if (grid[y]?.[x] === c && Math.hypot(x + .5 - player.x, y + .5 - player.y) < 1.15) return true; return false; };
   if (S.level === 0 && !S.doorOpen && near('L')) {
@@ -489,7 +579,7 @@ function update(dt) {
       say('door');
       return;
     }
-    if (doorMsgT <= 0) { doorMsgT = 3; toast(`とびらに3つのみぞがある。しおりが ${S.got.filter(Boolean).length}/3`); }
+    if (doorMsgT <= 0) { doorMsgT = 3; toast(`とびらに${N_SHIORI}つのみぞがある。しおりが ${S.got.filter(Boolean).length}/${N_SHIORI}`); }
   }
   if (S.level === 0 && near('E')) {
     if (S.key) { startEnding(); return; }
@@ -507,32 +597,32 @@ function updateEnemy(dt) {
   const dx = player.x - e.x, dy = player.y - e.y, d = Math.hypot(dx, dy);
   const chasing = e.mode === 'chase';
 
-  // 視界：前方 ±55° ・ 6.5マス（追跡中は全方向 8 マス）。かくれ中は 1.2 マス
+  // 視界：前方 fov 内・sight マス（追跡中は全方向で +1.5）。かくれ中は hide マス
   let sees = false;
   if (!GOD) {
-    const range = player.hidden ? 1.2 : chasing ? 8 : 6.5;
+    const range = player.hidden ? L.hide : chasing ? L.sight + 1.5 : L.sight;
     const ang = Math.abs(Math.atan2(Math.sin(Math.atan2(dy, dx) - e.face), Math.cos(Math.atan2(dy, dx) - e.face)));
-    if (d <= range && (chasing || d < 1.4 || ang < 0.96) && los(e.x, e.y, player.x, player.y)) sees = true;
+    if (d <= range && (chasing || d < 1.4 || ang < L.fov) && los(e.x, e.y, player.x, player.y)) sees = true;
   }
   if (sees) e.alert += dt * (d < 3 ? 2.2 : 0.95);
   else if (!chasing) e.alert = Math.max(0, e.alert - dt * 0.5);
 
   // 初めて鬱が見えたときの会話（ライトの範囲に入ったら）
-  if (!S.met && d < LIGHT_R && los(e.x, e.y, player.x, player.y)) {
+  if (!S.met && d < LEVELS[S.level].light && los(e.x, e.y, player.x, player.y)) {
     S.met = true; save(); say('meet'); return;
   }
 
   if (!GOD && e.alert >= 1 && !chasing) { e.mode = 'chase'; e.lose = 0; e.repath = 0; beep(500, .3, 'sawtooth', .1, 200); }
 
   // 足音が聞こえたら、その場所を見に来る
-  if (!GOD && player.noise && d < player.noise && (e.mode === 'patrol' || e.mode === 'search')) {
+  if (!GOD && player.noise && d < player.noise * L.hear && (e.mode === 'patrol' || e.mode === 'search')) {
     e.mode = 'investigate'; e.target = [Math.floor(player.x), Math.floor(player.y)]; setPath(e, ...e.target);
   }
 
   e.repath -= dt;
   if (e.mode === 'chase') {
     if (sees) { e.lose = 0; e.last = [player.x, player.y]; } else e.lose += dt;
-    if (e.lose > 4) { e.mode = 'search'; e.look = 3; e.alert = 0.3; setPath(e, Math.floor(e.last[0]), Math.floor(e.last[1])); }
+    if (e.lose > L.lose) { e.mode = 'search'; e.look = 3; e.alert = 0.3; setPath(e, Math.floor(e.last[0]), Math.floor(e.last[1])); }
     else {
       if (sees && d < 6 && losWide(e.x, e.y, player.x, player.y)) { // まっすぐ追う
         const st = L.chaseSpeed * dt;
@@ -609,10 +699,10 @@ function renderMap() {
       c.fillStyle = '#3c2512'; c.fillRect(px + 3, py + 3, T - 6, T - 6);
       c.fillStyle = '#e0b84a'; for (let i = 0; i < 3; i++) c.fillRect(px + 14, py + 8 + i * 9, 12, 4);
       c.fillStyle = '#e0b84a'; c.font = `bold 8px ${FONT_STACK}`; c.fillText('館長室', px + T / 2, py + 4);
-    } else if (ch === 'S' || ch === 'U') {
+    } else if ('SUTV'.includes(ch)) {
       c.fillStyle = '#1c1c24'; c.fillRect(px, py, T, T);
       for (let i = 0; i < 5; i++) { c.fillStyle = `rgba(190,190,210,${.25 + i * .12})`; c.fillRect(px + 4, py + 4 + i * 7, T - 8, 4); }
-      c.fillStyle = '#fff'; c.font = `bold 14px ${FONT_STACK}`; c.fillText(ch === 'S' ? '▼' : '▲', px + T / 2, py + T / 2);
+      c.fillStyle = '#fff'; c.font = `bold 14px ${FONT_STACK}`; c.fillText('SV'.includes(ch) ? '▼' : '▲', px + T / 2, py + T / 2);
     }
   }
 }
@@ -694,7 +784,7 @@ function render() {
   if (da > 0.01) {
     dctx.fillStyle = `rgba(2,2,10,${da})`; dctx.fillRect(0, 0, W, Hh);
     dctx.globalCompositeOperation = 'destination-out';
-    const R = LIGHT_R * (1 + dawn * 3), cx = sx(player.x), cy = sy(player.y);
+    const R = LEVELS[S.level].light * (1 + dawn * 3), cx = sx(player.x), cy = sy(player.y);
     const g = dctx.createRadialGradient(cx, cy, SC * .3, cx, cy, R * SC);
     g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(.6, 'rgba(0,0,0,.85)'); g.addColorStop(1, 'rgba(0,0,0,0)');
     dctx.fillStyle = g;
