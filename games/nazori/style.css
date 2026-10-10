@@ -1,0 +1,64 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #0d0f1c; font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif; color: #222; -webkit-user-select: none; user-select: none; }
+body { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+button { font: inherit; font-size: 15px; border: none; border-radius: 10px; padding: 8px 12px; background: #6741d9; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #999; cursor: default; }
+button.sub { background: #e9e6df; color: #333; }
+[hidden] { display: none !important; }
+.glyph { font-family: 'MojiNazori', "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif; font-weight: 900; }
+
+#bar { flex: none; height: 40px; padding: 0 8px; display: flex; align-items: center; gap: 8px; background: #151832; color: #fff; z-index: 5; }
+#bar .back { color: #c5b3ff; font-size: 13px; text-decoration: none; white-space: nowrap; }
+#stage-name { flex: 1; text-align: center; font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#bar .btns { display: flex; gap: 6px; }
+#bar button { padding: 5px 10px; font-size: 13px; background: #3a4060; }
+
+#field-wrap { flex: 1; min-height: 110px; position: relative; }
+#field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#ring { position: absolute; left: 6px; top: 6px; width: 104px; pointer-events: none; }
+#ring svg { display: block; width: 100%; height: auto; }
+#ring text { font-family: 'MojiNazori', "Noto Sans JP", sans-serif; font-weight: 900; }
+#hud { position: absolute; right: 8px; top: 6px; text-align: right; color: #fff; font-size: 13px; text-shadow: 0 1px 3px #000; line-height: 1.5; pointer-events: none; }
+#h-hearts { font-size: 18px; color: #ff6b81; letter-spacing: 2px; }
+#h-hearts .off { color: #4a4f6a; }
+#toast { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); max-width: calc(100% - 230px); padding: 6px 12px; border-radius: 14px; background: rgba(255, 253, 248, .95); font-size: 13px; line-height: 1.5; text-align: center; pointer-events: none; }
+#toast:empty { display: none; }
+
+#elems { flex: none; display: flex; justify-content: center; gap: 6px; padding: 6px 8px; background: #151832; }
+#elems button { flex: 0 1 76px; padding: 3px 0 2px; border-radius: 12px; border: 3px solid transparent; line-height: 1.1; color: #fff; }
+#elems button .c { display: block; font-size: 30px; }
+#elems button small { display: block; font-size: 10px; opacity: .9; }
+#elems button.sel { border-color: #fff; box-shadow: 0 0 12px currentColor; transform: translateY(-2px); }
+#elems button.rec { outline: 3px dashed #fff; outline-offset: 1px; }
+
+#pad-row { flex: none; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 6px 8px 10px; background: #0d0f1c; }
+:root { --pad: min(38vh, calc(100vw - 150px), 420px); }
+@supports (height: 1dvh) { :root { --pad: min(38dvh, calc(100vw - 150px), 420px); } }
+#pad-wrap { position: relative; width: var(--pad); height: var(--pad); flex: none; }
+#pad { width: 100%; height: 100%; display: block; touch-action: none; border-radius: 16px; cursor: crosshair; }
+#pad-info { position: absolute; left: 0; right: 0; bottom: -2px; text-align: center; color: #cfd3ff; font-size: 11px; white-space: nowrap; text-shadow: 0 1px 2px #000; pointer-events: none; }
+button.side { width: 64px; height: 64px; border-radius: 50%; font-size: 14px; font-weight: bold; padding: 0; background: #3a4060; white-space: nowrap; }
+#b-cast { background: #e8590c; font-size: 14px; }
+@media (max-width: 480px) { #ring { width: 80px; } button.side { width: 56px; height: 56px; font-size: 13px; } #b-cast { font-size: 13px; } :root { --pad: min(38dvh, calc(100vw - 130px), 420px); } #toast { max-width: calc(100% - 190px); font-size: 12px; } }
+
+#talk { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(620px, calc(100vw - 20px)); z-index: 8; display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; cursor: pointer; background: rgba(255, 253, 248, .97); box-shadow: 0 4px 16px rgba(0,0,0,.45); }
+#talk-av { flex: none; width: 52px; height: 52px; border-radius: 12px; display: grid; place-items: center; font-size: 34px; color: #fff; }
+#talk-body { flex: 1; min-width: 0; }
+#talk-name { font-size: 13px; color: #666; }
+#talk-text { margin: 2px 0 0; font-size: 15px; line-height: 1.6; }
+#talk-next { color: #6741d9; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+.card { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(480px, calc(100vw - 24px)); max-height: calc(100vh - 20px); overflow: auto; padding: 20px 18px; border-radius: 18px; background: rgba(255, 253, 248, .98); box-shadow: 0 6px 30px rgba(0,0,0,.55); text-align: center; z-index: 10; }
+.card h1 { margin: 2px 0 8px; font-size: 32px; letter-spacing: .1em; }
+.card h2 { margin: 0 0 12px; }
+.card .big { font-size: 48px; line-height: 1.15; letter-spacing: .04em; }
+.card button { display: block; width: 100%; margin: 8px 0 0; padding: 12px; font-size: 17px; }
+.card .hint { font-size: 12px; color: #555; line-height: 1.7; text-align: left; }
+#lead { font-size: 13px; line-height: 1.8; color: #444; margin-bottom: 8px; }
+.back2 { display: inline-block; margin-top: 12px; color: #5f3dc4; font-size: 14px; }
+#stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+#stage-grid button { padding: 10px 0; font-size: 22px; font-weight: bold; margin: 0; }
+#stage-grid button small { display: block; font-size: 12px; color: #ffe08a; }
+#stage-grid button:disabled { background: #bbb; }
+#r-info { font-size: 14px; color: #444; line-height: 1.8; }
