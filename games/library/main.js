@@ -4,9 +4,9 @@ import { FONT_URL } from '../../config.js';
 
 // ---------- 定数 ----------
 const SAVE_KEY = 'moji-library-save-v2';
-const N_SHIORI = 6;
+const N_SHIORI = 6;           // しおりの総数
 // ★ふつうのレンタルサーバーに置いたら保存したいとき：save.php を同じ場所に置き、下に './save.php' を入れる（空のままなら端末内の localStorage だけ）
-const SERVER_SAVE_URL = '';           // しおりの総数
+const SERVER_SAVE_URL = '';
 const FONT_STACK = "'NotoJPLib','Hiragino Sans','Yu Gothic','Noto Sans CJK JP','WenQuanYi Zen Hei',sans-serif";
 const WALK = 2.8, RUN = 4.8;  // プレイヤー速度（マス/秒）
 const NOISE_WALK = 2.2, NOISE_RUN = 7; // 足音の届く半径
