@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>あ、脱出する</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <span id="room-name"></span>
+    <div class="btns">
+      <button id="hint">ヒント</button>
+      <button id="reset">やり直し</button>
+      <button id="rooms">部屋</button>
+    </div>
+  </header>
+  <div id="toast"></div>
+
+  <div id="talk" hidden>
+    <div id="talk-av" class="glyph"></div>
+    <div id="talk-body"><b id="talk-name"></b><p id="talk-text"></p></div>
+    <span id="talk-next">▶</span>
+  </div>
+  <button id="next-room" hidden>つぎの部屋へ ▶</button>
+
+  <div id="title" class="card">
+    <h1>あ、脱出する</h1>
+    <div id="lead"></div>
+    <p class="hint">画面をドラッグして、文字をころがす・おす・持ち上げる・なげる。<br>光る板に ちがう字を のせて、扉をあけよう。</p>
+    <button id="start" disabled>読み込み中…</button>
+    <button id="continue" hidden>つづきから</button>
+    <button id="to-select" class="sub" hidden>部屋をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <div id="select" class="card" hidden>
+    <h2>部屋をえらぶ</h2>
+    <div id="room-grid"></div>
+    <button id="select-close" class="sub">もどる</button>
+  </div>
+
+  <div id="ending" class="card" hidden>
+    <div class="big">あいうえお</div>
+    <h2>おしまい</h2>
+    <p>五つの部屋を ぬけて、ひらがなたちは「五十音の野原」へ。<br>あそんでくれて ありがとう！</p>
+    <button id="again">さいしょから</button>
+    <button id="end-select" class="sub">部屋をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

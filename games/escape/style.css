@@ -1,0 +1,69 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #14161f; font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif; color: #222; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+button { font: inherit; font-size: 15px; border: none; border-radius: 10px; padding: 8px 12px; background: #e8590c; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #999; cursor: default; }
+button.sub { background: #e9e6df; color: #333; }
+[hidden] { display: none !important; }
+.glyph { font-family: 'MojiEscape', system-ui, sans-serif; }
+
+#bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 46px; padding: 0 8px; display: flex; align-items: center; gap: 8px;
+  background: rgba(20, 22, 31, .88); color: #fff; z-index: 5;
+}
+#bar .back { color: #9cc7ff; font-size: 13px; text-decoration: none; white-space: nowrap; }
+#room-name { flex: 1; text-align: center; font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#bar .btns { display: flex; gap: 6px; }
+#bar button { padding: 6px 10px; font-size: 13px; background: #3a4060; }
+#bar button#hint { background: #e8590c; }
+
+#toast {
+  position: fixed; top: 56px; left: 50%; transform: translateX(-50%); max-width: min(560px, calc(100vw - 24px));
+  padding: 10px 16px; border-radius: 14px; background: rgba(255, 253, 248, .96); color: #222; font-size: 14px; line-height: 1.6;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35); pointer-events: none; z-index: 6; text-align: center;
+}
+#toast:empty { display: none; }
+
+#talk {
+  position: fixed; left: 50%; top: 56px; transform: translateX(-50%); width: min(620px, calc(100vw - 20px)); z-index: 8;
+  display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; cursor: pointer;
+  background: rgba(255, 253, 248, .97); box-shadow: 0 4px 16px rgba(0,0,0,.45); user-select: none; -webkit-user-select: none;
+}
+#talk-av { flex: none; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 36px; font-weight: 900; line-height: 1; color: #fff; }
+#talk-body { flex: 1; min-width: 0; }
+#talk-name { font-size: 13px; color: #666; }
+#talk-text { margin: 2px 0 0; font-size: 16px; line-height: 1.6; color: #222; }
+#talk-next { flex: none; color: #e8590c; font-size: 20px; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+#next-room { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 8; font-size: 20px; padding: 12px 24px; box-shadow: 0 2px 10px rgba(0,0,0,.4); }
+
+.card {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 10;
+  width: min(400px, calc(100vw - 28px)); max-height: calc(100vh - 20px); overflow: auto; padding: 20px; text-align: center;
+  background: rgba(255, 253, 248, .98); border-radius: 18px; box-shadow: 0 6px 24px rgba(0,0,0,.5);
+}
+.card h1 { margin: 0 0 8px; font-size: 32px; letter-spacing: .1em; }
+.card h2 { margin: 0 0 10px; font-size: 22px; }
+.card p { margin: 8px 0; font-size: 14px; line-height: 1.7; color: #333; }
+#lead { font-size: 14px; line-height: 1.8; color: #333; margin: 6px 0 10px; }
+.hint { font-size: 12px !important; color: #667 !important; }
+.card button { display: block; width: 100%; margin-top: 8px; font-size: 18px; padding: 12px; }
+.back2 { display: inline-block; margin-top: 12px; font-size: 13px; color: #2b7de9; }
+.big { font-size: 44px; font-weight: 900; letter-spacing: .15em; color: #e8590c; }
+
+#room-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 6px; }
+#room-grid button { margin: 0; padding: 10px 0 6px; font-size: 28px; font-weight: 900; line-height: 1.1; position: relative; background: #fff3e6; color: #c24a08; border: 2px solid #f2d3b3; }
+#room-grid button small { display: block; font-size: 11px; font-weight: normal; color: #666; margin-top: 2px; }
+#room-grid button.done { background: #e6f6e6; color: #2e7d32; border-color: #b7dfb8; }
+#room-grid button:disabled { background: #eee; color: #aaa; border-color: #ddd; }
+
+@media (max-width: 520px) {
+  #bar .back { font-size: 11px; }
+  #room-name { display: none; }
+  #bar .btns { margin-left: auto; }
+  #talk-text { font-size: 14px; }
+  #talk-av { width: 46px; height: 46px; font-size: 30px; }
+}
+
+#bar:not(.playing) .btns { display: none; }
