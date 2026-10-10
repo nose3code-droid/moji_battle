@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>火消し大作戦</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <span id="stage-name"></span>
+    <div class="btns">
+      <button id="retry">やり直し</button>
+      <button id="stages">面</button>
+    </div>
+  </header>
+  <div id="hud">
+    <span class="cell">⏱ <b id="h-time">0</b></span>
+    <span class="cell gauge"><i class="g-label">水</i><span class="bar"><span id="h-water" class="fill water"></span></span></span>
+    <span class="cell gauge"><i class="g-label">砂</i><span class="bar"><span id="h-sand" class="fill sand"></span></span></span>
+    <span class="cell">被害 <b id="h-loss">0</b>/<span id="h-limit">0</span></span>
+    <span class="cell">人 <b id="h-res">0</b></span>
+    <span class="cell" id="h-wind">風 なし</span>
+  </div>
+  <div id="toast"></div>
+
+  <div id="touch">
+    <button id="b-switch">水⇄砂</button>
+    <button id="b-fire">放水</button>
+  </div>
+
+  <div id="talk" hidden>
+    <div id="talk-av" class="glyph"></div>
+    <div id="talk-body"><b id="talk-name"></b><p id="talk-text"></p></div>
+    <span id="talk-next">▶</span>
+  </div>
+
+  <div id="title" class="card">
+    <div class="big glyph">火</div>
+    <h1>火消し大作戦</h1>
+    <div id="lead"></div>
+    <p class="hint">移動：矢印キー / WASD / 画面ドラッグ<br>放水：スペース（押しながら矢印で向きを変える）<br>水⇄砂の切り替え：Kキー / ボタン</p>
+    <button id="start" disabled>読み込み中…</button>
+    <button id="continue" hidden>つづきから</button>
+    <button id="to-select" class="sub">面をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <div id="select" class="card" hidden>
+    <h2>面をえらぶ</h2>
+    <div id="stage-grid"></div>
+    <button id="select-close" class="sub">もどる</button>
+  </div>
+
+  <div id="result" class="card" hidden>
+    <h2 id="r-title"></h2>
+    <div id="r-stars"></div>
+    <p id="r-info"></p>
+    <button id="r-next">つぎの面へ ▶</button>
+    <button id="r-again" class="sub">もう一度</button>
+    <button id="r-select" class="sub">面をえらぶ</button>
+    <a href="../../" class="back2">← メインページへ</a>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

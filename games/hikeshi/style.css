@@ -1,0 +1,73 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #10131f; font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif; color: #222; -webkit-user-select: none; user-select: none; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+button { font: inherit; font-size: 15px; border: none; border-radius: 10px; padding: 8px 12px; background: #e8590c; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #999; cursor: default; }
+button.sub { background: #e9e6df; color: #333; }
+[hidden] { display: none !important; }
+.glyph { font-family: 'MojiHikeshi', "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif; font-weight: 900; }
+
+#bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 44px; padding: 0 8px; display: flex; align-items: center; gap: 8px;
+  background: rgba(16, 19, 31, .92); color: #fff; z-index: 5;
+}
+#bar .back { color: #ffb37a; font-size: 13px; text-decoration: none; white-space: nowrap; }
+#stage-name { flex: 1; text-align: center; font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#bar .btns { display: flex; gap: 6px; }
+#bar button { padding: 6px 10px; font-size: 13px; background: #3a4060; }
+
+#hud {
+  position: fixed; top: 44px; left: 0; right: 0; height: 34px; padding: 0 8px; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: rgba(16, 19, 31, .8); color: #fff; font-size: 13px; z-index: 4; white-space: nowrap;
+}
+#hud .gauge { display: flex; align-items: center; gap: 4px; }
+#hud .g-label { font-style: normal; font-weight: bold; }
+#hud .bar { display: inline-block; width: 54px; height: 10px; border-radius: 5px; background: #333a55; overflow: hidden; }
+#hud .fill { display: block; height: 100%; width: 100%; }
+#hud .fill.water { background: #4dabf7; }
+#hud .fill.sand { background: #e0b25c; }
+#hud b.warn { color: #ff6b6b; }
+#hud.hide, #touch.hide { display: none; }
+
+#toast {
+  position: fixed; top: 86px; left: 50%; transform: translateX(-50%); max-width: min(560px, calc(100vw - 24px));
+  padding: 8px 14px; border-radius: 14px; background: rgba(255, 253, 248, .96); color: #222; font-size: 14px; line-height: 1.5;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35); pointer-events: none; z-index: 6; text-align: center;
+}
+#toast:empty { display: none; }
+
+#touch { position: fixed; right: 12px; bottom: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 4; }
+#touch button { background: rgba(77, 171, 247, .85); box-shadow: 0 2px 8px rgba(0,0,0,.4); }
+#b-fire { width: 92px; height: 92px; border-radius: 50%; font-size: 20px; font-weight: bold; }
+#b-switch { font-size: 13px; padding: 8px 12px; background: rgba(58, 64, 96, .9); }
+
+#talk {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(620px, calc(100vw - 20px)); z-index: 8;
+  display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; cursor: pointer;
+  background: rgba(255, 253, 248, .97); box-shadow: 0 4px 16px rgba(0,0,0,.45);
+}
+#talk-av { flex: none; width: 52px; height: 52px; border-radius: 12px; display: grid; place-items: center; font-size: 34px; color: #fff; background: #4dabf7; }
+#talk-body { flex: 1; min-width: 0; }
+#talk-name { font-size: 13px; color: #666; }
+#talk-text { margin: 2px 0 0; font-size: 15px; line-height: 1.6; }
+#talk-next { color: #e8590c; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+.card {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(460px, calc(100vw - 24px)); max-height: calc(100vh - 20px); overflow: auto;
+  padding: 22px 20px; border-radius: 18px; background: rgba(255, 253, 248, .98); box-shadow: 0 6px 30px rgba(0,0,0,.55); text-align: center; z-index: 10;
+}
+.card h1 { margin: 4px 0 10px; font-size: 32px; letter-spacing: .1em; }
+.card h2 { margin: 0 0 12px; }
+.card .big { font-size: 64px; line-height: 1.1; color: #e8590c; text-shadow: 0 0 18px rgba(255,140,40,.6); }
+.card button { display: block; width: 100%; margin: 8px 0 0; padding: 12px; font-size: 17px; }
+.card .hint { font-size: 12px; color: #666; line-height: 1.7; }
+#lead { font-size: 13px; line-height: 1.8; color: #444; margin-bottom: 8px; }
+.back2 { display: inline-block; margin-top: 12px; color: #c2410c; font-size: 14px; }
+#stage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+#stage-grid button { padding: 10px 0; font-size: 22px; font-weight: bold; margin: 0; }
+#stage-grid button small { display: block; font-size: 13px; color: #ffe08a; letter-spacing: 1px; }
+#stage-grid button:disabled { background: #bbb; }
+#r-stars { font-size: 42px; color: #f59f00; letter-spacing: 6px; }
+#r-stars .off { color: #ccc; }
+#r-info { font-size: 14px; color: #444; line-height: 1.7; }
