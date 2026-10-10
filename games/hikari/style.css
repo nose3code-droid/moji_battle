@@ -1,0 +1,77 @@
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #07070d; color: #eee; font-family: system-ui, "Hiragino Sans", "Yu Gothic", "Noto Sans CJK JP", "IPAGothic", "WenQuanYi Zen Hei", sans-serif; user-select: none; -webkit-user-select: none; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+[hidden] { display: none !important; }
+
+.back { color: #9ec3ff; font-size: 13px; text-decoration: none; background: rgba(0,0,0,.55); padding: 5px 9px; border-radius: 6px; white-space: nowrap; }
+
+/* 上のバー */
+#bar { flex-wrap: wrap; position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 10px; padding: 8px 12px 0 12px; padding-top: max(8px, env(safe-area-inset-top)); pointer-events: none; }
+#bar .back { pointer-events: auto; }
+#lvname { flex: 1; text-align: center; font-size: 15px; letter-spacing: .08em; color: #ffe9a8; text-shadow: 0 1px 4px #000; }
+#moves { font-size: 14px; color: #cfe; text-shadow: 0 1px 3px #000; text-align: right; min-width: 6.5em; }
+#moves b { color: #ffd75e; font-size: 17px; }
+#goal { position: fixed; top: 44px; left: 0; right: 0; z-index: 9; text-align: center; font-size: 12px; color: #9ab; pointer-events: none; padding: 0 12px; }
+
+/* 下のボタン */
+#tools { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; gap: 10px; justify-content: center; padding: 10px 12px; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+#tools button { font-size: 15px; padding: 10px 16px; background: rgba(60,50,110,.85); border: 1px solid #8a7fc0; }
+
+button, .btn { font-size: 17px; border: none; border-radius: 10px; padding: 10px 20px; background: #5b4aa8; color: #fff; cursor: pointer; text-decoration: none; font-family: inherit; }
+button:disabled { background: #444; color: #888; cursor: default; }
+
+/* 会話 */
+#dialog { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); width: min(92vw, 640px); z-index: 25; background: rgba(8,8,20,.93); border: 2px solid #8a7fc0; border-radius: 12px; padding: 12px 16px 22px; cursor: pointer; }
+#who { font-size: 14px; font-weight: 700; min-height: 1.2em; color: #c9b6ff; }
+#text { font-size: 17px; line-height: 1.6; min-height: 3.2em; }
+#next { position: absolute; right: 12px; bottom: 4px; font-size: 11px; color: #889; }
+
+/* 画面いっぱいの重ね表示 */
+.overlay { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; background: radial-gradient(circle at 50% 40%, #1d1a34, #050509 72%); }
+.overlay > .back { position: absolute; top: max(8px, env(safe-area-inset-top)); left: 12px; }
+.overlay h1 { margin: 6px 0 10px; font-size: 32px; letter-spacing: .15em; }
+.overlay h2 { margin: 0 0 12px; font-size: 24px; letter-spacing: .12em; }
+.overlay p { max-width: 520px; line-height: 1.8; font-size: 14px; opacity: .9; margin: 6px 0; }
+.overlay .help { font-size: 12px; opacity: .6; }
+.big { font-size: 88px; line-height: 1; font-weight: 700; display: flex; gap: 8px; align-items: center; }
+.big .k { color: #ffe9a8; text-shadow: 0 0 22px #ffcf6a, 0 0 50px #ff9a3a; font-size: .66em; }
+.big .y { color: #6e4cb0; text-shadow: 0 0 22px #3a1d70; }
+.btns { display: flex; gap: 12px; margin: 14px 0; flex-wrap: wrap; justify-content: center; }
+
+/* 面セレクト */
+#levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; width: min(94vw, 560px); }
+#levels button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; background: #3b3470; border: 1px solid #8a7fc0; font-size: 22px; }
+#levels button small { font-size: 10px; opacity: .8; line-height: 1.2; min-height: 2.4em; }
+#levels button .st { font-size: 13px; color: #ffd75e; letter-spacing: 1px; min-height: 1.2em; }
+#levels button:disabled { background: #22222c; border-color: #333; color: #666; }
+
+/* クリア */
+.clearbox { background: rgba(5,5,12,.55); z-index: 30; }
+#clear-title { color: #ffe9a8; font-size: 28px; text-shadow: 0 0 18px #ffb84a; }
+#clear-stars { font-size: 46px; letter-spacing: .12em; color: #ffd75e; text-shadow: 0 0 14px #ff9a3a; }
+#clear-stars .off { color: #3a3a4a; text-shadow: none; }
+
+/* エンディング：闇と光がならんで「明」になる */
+#ending { background: linear-gradient(180deg, #14122a 0%, #6a4a7a 50%, #f4a67a 80%, #ffe3a0 100%); color: #fff; animation: dawn 6s ease-out both; z-index: 50; }
+@keyframes dawn { from { filter: brightness(.35); } to { filter: brightness(1); } }
+#ending .pair { position: relative; height: 130px; width: 220px; font-size: 100px; font-weight: 700; }
+#ending .pair span { position: absolute; top: 0; line-height: 1.2; }
+#ending .yami { left: 8px; color: #3b2370; text-shadow: 0 0 18px #7a55c4; animation: yamiIn 5s 1s ease-in-out both; }
+#ending .hikari { right: 8px; color: #fff4c4; text-shadow: 0 0 24px #ffcf6a, 0 0 60px #ff9a3a; animation: hikariIn 5s 1s ease-in-out both; }
+#ending .mei { left: 50%; transform: translateX(-50%); color: #fff8d8; text-shadow: 0 0 30px #ffd75e, 0 0 80px #ff9a3a; opacity: 0; animation: meiIn 3s 5s ease-out forwards; }
+@keyframes yamiIn { 0% { transform: translateX(-60px); opacity: 0; } 30% { opacity: 1; } 70% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(26px); opacity: 0; } }
+@keyframes hikariIn { 0% { transform: translateX(60px); opacity: 0; } 30% { opacity: 1; } 70% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(-26px); opacity: 0; } }
+@keyframes meiIn { from { opacity: 0; transform: translateX(-50%) scale(.6); } to { opacity: 1; transform: translateX(-50%) scale(1.15); } }
+#ending h1, #ending p, #ending .btns { opacity: 0; animation: fadeUp 1.5s 7.5s ease-out forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 600px) {
+  #bar { row-gap: 2px; }
+  #bar .back { order: 1; }
+  #moves { order: 2; margin-left: auto; }
+  #lvname { order: 3; flex-basis: 100%; }
+  #goal { top: 66px; }
+  .overlay h1 { font-size: 26px; }
+  .big { font-size: 72px; }
+  #levels { gap: 7px; }
+}
