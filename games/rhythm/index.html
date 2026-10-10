@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>五属性リズム 〜字の都の音楽〜</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="../../">← メインページへ</a>
+    <h1>五属性リズム</h1>
+    <button id="btn-quit" class="sub" hidden>やめる</button>
+  </header>
+
+  <div id="wrap">
+    <canvas id="view"></canvas>
+
+    <!-- 曲選択・設定 -->
+    <div id="menu" class="panel">
+      <div class="five"><b style="color:#ff5a2a">火</b><b style="color:#3d8bff">水</b><b style="color:#ffe14d">雷</b><b style="color:#ffe7a0">光</b><b style="color:#a24bff">闇</b></div>
+      <h2>五属性リズム</h2>
+      <p class="lead">音の消えた「字の都」。五つの楽器の精霊を叩いて目覚めさせ、音楽を取り戻そう。<br>
+        <small>キー：<kbd>D</kbd><kbd>F</kbd><kbd>J</kbd><kbd>K</kbd><kbd>L</kbd>　スマホ：下のパッドをタップ</small></p>
+      <div id="songs"></div>
+      <div class="calib">
+        <label>遅延調整 <b id="calib-val">0</b> ms
+          <input id="calib" type="range" min="-200" max="200" step="5" value="0"></label>
+        <button id="btn-auto" class="sub">自動調整（8回タップ）</button>
+        <small>いつも遅れてタップしてしまうなら＋、早いなら−</small>
+      </div>
+      <details class="how">
+        <summary>遊び方・ギミック</summary>
+        <ul>
+          <li><b style="color:#ff5a2a">火</b> 連打ノーツ：つながった数だけ素早くタップ</li>
+          <li><b style="color:#3d8bff">水</b> 長押しノーツ：線の終わりまで押し続ける</li>
+          <li><b style="color:#ffe14d">雷</b> 瞬間ノーツ：とても速く落ちてくる</li>
+          <li><b style="color:#ffe7a0">光</b> ガイド線：先に光の筋が見える</li>
+          <li><b style="color:#a24bff">闇</b> 隠れノーツ：直前まで見えにくい</li>
+        </ul>
+      </details>
+    </div>
+
+    <!-- 会話 -->
+    <div id="talk" hidden>
+      <div id="talk-ch"></div>
+      <div id="talk-main"><b id="talk-name"></b><p id="talk-text"></p></div>
+      <i id="talk-next">▼</i>
+    </div>
+
+    <!-- 結果 -->
+    <div id="result" class="panel" hidden>
+      <div id="res-song"></div>
+      <div id="res-rank">S</div>
+      <div id="res-new" hidden>ハイスコア更新！</div>
+      <div id="res-stats"></div>
+      <div id="res-lanes"></div>
+      <div class="btns">
+        <button id="btn-retry">やり直し</button>
+        <button id="btn-next" class="sub2">次の曲へ</button>
+        <button id="btn-menu" class="sub2">曲選択</button>
+      </div>
+    </div>
+
+    <!-- 自動調整 -->
+    <div id="calib-box" class="panel" hidden>
+      <h2>自動調整</h2>
+      <p id="calib-msg">カチッという音に合わせて、タップ（キー・画面）を8回。</p>
+      <button id="calib-cancel" class="sub2">やめる</button>
+    </div>
+  </div>
+
+  <div id="pads">
+    <button class="pad" data-lane="0" style="--c:#ff5a2a"><b>火</b><small>D</small></button>
+    <button class="pad" data-lane="1" style="--c:#3d8bff"><b>水</b><small>F</small></button>
+    <button class="pad" data-lane="2" style="--c:#ffe14d"><b>雷</b><small>J</small></button>
+    <button class="pad" data-lane="3" style="--c:#ffe7a0"><b>光</b><small>K</small></button>
+    <button class="pad" data-lane="4" style="--c:#a24bff"><b>闇</b><small>L</small></button>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

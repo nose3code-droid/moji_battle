@@ -1,0 +1,76 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0b0d18; color: #eef; font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+body { display: flex; flex-direction: column; overflow: hidden; -webkit-user-select: none; user-select: none; }
+[hidden] { display: none !important; }
+
+header { display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1a1d33; flex: none; }
+header a { color: #8fc1ff; font-size: 14px; text-decoration: none; white-space: nowrap; }
+header h1 { flex: 1; margin: 0; font-size: 17px; text-align: center; color: #ffe7a0; }
+header button { visibility: visible; }
+
+button { font: inherit; font-size: 16px; border: none; border-radius: 8px; padding: 10px 16px; background: #e8a90c; color: #221; font-weight: bold; cursor: pointer; touch-action: manipulation; }
+button.sub { background: #3a4266; color: #eef; font-weight: normal; padding: 6px 10px; font-size: 13px; }
+button.sub2 { background: #3a4266; color: #eef; font-weight: normal; }
+
+#wrap { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; }
+#view { display: block; height: 100%; max-width: 100%; aspect-ratio: 2 / 3; touch-action: none; background: #0b0d18; }
+
+/* パッド（画面下のタップ領域） */
+#pads { flex: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 4px 6px calc(6px + env(safe-area-inset-bottom)); height: clamp(72px, 16vh, 130px); background: #0b0d18; }
+.pad { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0; border-radius: 12px; background: color-mix(in srgb, var(--c) 22%, #14172a); color: var(--c); border: 2px solid var(--c); touch-action: none; }
+.pad b { font-size: clamp(26px, 6vh, 44px); line-height: 1; }
+.pad small { font-size: 12px; opacity: .7; color: #fff; }
+.pad.down { background: var(--c); color: #111; }
+.pad.down small { color: #111; }
+
+.panel {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(520px, calc(100% - 20px)); max-height: calc(100% - 12px); overflow-y: auto;
+  padding: 14px 16px 16px; text-align: center;
+  background: rgba(12, 14, 32, .95); border: 2px solid #ffe7a0; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,.7);
+}
+.panel h2 { margin: 2px 0 4px; font-size: 22px; color: #fff; }
+.five { font-size: 44px; letter-spacing: 6px; }
+.five b { text-shadow: 0 0 12px currentColor; }
+.lead { margin: 4px 0 10px; font-size: 13px; line-height: 1.7; color: #cdd; }
+kbd { display: inline-block; margin: 0 2px; padding: 0 6px; border: 1px solid #667; border-radius: 4px; background: #222a48; color: #fff; }
+#songs { display: grid; gap: 8px; }
+.song { display: flex; align-items: center; gap: 10px; text-align: left; background: #232949; color: #eef; font-weight: normal; padding: 10px 12px; }
+.song:hover { background: #2e3560; }
+.song .lv { flex: none; width: 5.6em; font-size: 12px; color: #ffe7a0; }
+.song .nm { flex: 1; font-size: 16px; font-weight: bold; }
+.song .bs { flex: none; font-size: 12px; color: #aab; text-align: right; }
+.song .bs b { font-size: 20px; color: #ffe14d; margin-left: 4px; }
+.calib { margin-top: 12px; padding-top: 10px; border-top: 1px solid #334; display: grid; gap: 6px; font-size: 13px; }
+.calib input { width: 100%; }
+.calib small { color: #99a; }
+.how { margin-top: 8px; font-size: 12px; text-align: left; color: #bbc; }
+.how ul { margin: 6px 0 0; padding-left: 18px; line-height: 1.8; }
+
+/* 会話 */
+#talk {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  width: min(560px, calc(100% - 16px)); display: flex; gap: 12px; align-items: center; cursor: pointer;
+  padding: 12px 14px; background: rgba(10, 12, 28, .94); border: 2px solid #ffe7a0; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.7);
+}
+#talk-ch { flex: none; width: 58px; height: 58px; display: grid; place-items: center; font-size: 38px; font-weight: bold; border: 2px solid currentColor; border-radius: 10px; background: #14172a; }
+#talk-main { flex: 1; min-height: 3.6em; }
+#talk-name { font-size: 13px; color: #ffe7a0; }
+#talk-text { margin: 4px 0 0; font-size: 15px; line-height: 1.6; }
+#talk-next { align-self: flex-end; color: #ffe7a0; animation: blink 1s infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+/* 結果 */
+#res-song { font-size: 14px; color: #aab; }
+#res-rank { font-size: 96px; line-height: 1.1; font-weight: bold; }
+#res-new { color: #ffe14d; font-weight: bold; animation: blink 1s infinite; }
+#res-stats { font-size: 15px; line-height: 1.8; margin-bottom: 8px; }
+#res-stats b { color: #ffe7a0; }
+#res-lanes { display: grid; gap: 4px; margin-bottom: 12px; }
+.lrow { display: grid; grid-template-columns: 32px 1fr 110px; gap: 8px; align-items: center; font-size: 12px; text-align: right; }
+.lrow i { font-style: normal; font-size: 24px; font-weight: bold; text-align: center; }
+.lrow .bar { height: 10px; background: #1d2240; border-radius: 5px; overflow: hidden; }
+.lrow .bar span { display: block; height: 100%; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.btns button { flex: 1 1 100px; }
+#calib-msg { font-size: 14px; }
