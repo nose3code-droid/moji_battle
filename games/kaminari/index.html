@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>雷よけ</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a href="../../">← メインページへ</a>
+    <h1>雷よけ</h1>
+    <button id="menu-btn" class="sub">面セレクト</button>
+  </header>
+
+  <div id="wrap">
+    <canvas id="view" width="960" height="540"></canvas>
+
+    <!-- 面セレクト／結果 -->
+    <div id="panel" hidden>
+      <div id="panel-ch"></div>
+      <div id="panel-title"></div>
+      <div id="panel-sub"></div>
+      <div id="panel-body"></div>
+      <div id="panel-btns"></div>
+    </div>
+
+    <!-- 会話 -->
+    <div id="talk" hidden>
+      <div id="talk-ch"></div>
+      <div id="talk-main">
+        <b id="talk-name"></b>
+        <p id="talk-text"></p>
+      </div>
+      <i id="talk-next">▼</i>
+    </div>
+
+    <div id="help">タップ／スペース：ジャンプ　下スワイプ／↓：伏せる（ゆっくり進む）</div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
