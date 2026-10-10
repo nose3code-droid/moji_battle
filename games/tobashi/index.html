@@ -26,8 +26,8 @@
     <div class="row">
       <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="文字">
       <div id="best-box">
-        <small>この字の自己ベスト</small>
-        <b id="best">―</b>
+        <div class="best ch"><small>この字のベスト</small><b id="best">―</b></div>
+        <div class="best all"><small>全体のベスト</small><b id="best-all">―</b><span id="best-all-ch"></span></div>
       </div>
     </div>
     <div class="row presets">
@@ -73,6 +73,7 @@
     <div id="result-ch"></div>
     <div id="result-title"></div>
     <div id="result-sub"></div>
+    <div id="result-all"></div>
     <div id="result-info"></div>
     <div class="row">
       <button id="retry">もう一度</button>
