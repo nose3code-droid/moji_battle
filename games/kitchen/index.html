@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>漢字キッチン</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <div id="rank-name"></div>
+    <div id="money">¥<b id="money-n">0</b></div>
+  </header>
+  <nav id="menu">
+    <button id="btn-recipe">📖 レシピ帳</button>
+    <button id="btn-zukan">🍽 ずかん <small id="zukan-n"></small></button>
+    <button id="btn-expand">🏠 お店を広げる</button>
+    <button id="btn-reset" class="sub">最初から</button>
+  </nav>
+
+  <section id="counter"><div id="custs"></div></section>
+
+  <section id="kitchen">
+    <div id="pot-area">
+      <canvas id="fx"></canvas>
+      <div id="pot"><div id="slots"></div><div id="pot-body"></div></div>
+      <div id="pot-btns">
+        <button id="btn-cook" disabled>つくる</button>
+        <button id="btn-clear" class="sub">だす</button>
+      </div>
+    </div>
+    <div id="tray-wrap"><span class="lbl">できたお皿（お客さんにドラッグ／タップで渡す）</span><div id="tray"></div></div>
+  </section>
+
+  <section id="shelf-wrap"><div id="shelf"></div></section>
+  <div id="toast"></div>
+
+  <div class="overlay" id="dialog" hidden>
+    <div class="say">
+      <div class="av" id="say-av"></div>
+      <div class="body"><div class="who" id="say-who"></div><div class="text" id="say-text"></div></div>
+      <button id="say-next">つぎへ ▶</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="found" hidden>
+    <div class="card">
+      <div class="small">図鑑にとうろく！</div>
+      <div class="big glyph" id="found-ch"></div>
+      <div class="meta" id="found-meta"></div>
+      <p id="found-desc"></p>
+      <button id="found-ok">OK</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="recipe" hidden>
+    <div class="card wide">
+      <h2>📖 レシピ帳</h2>
+      <div class="tabs" id="recipe-tabs"></div>
+      <div id="recipe-list"></div>
+      <button id="recipe-close">とじる</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="zukan" hidden>
+    <div class="card wide">
+      <h2>🍽 漢字ずかん <small id="zukan-count"></small></h2>
+      <div class="tabs"><button id="tab-kanji" class="on">漢字</button><button id="tab-guests">お客さん</button></div>
+      <div id="zukan-grid"></div>
+      <div id="zukan-detail"></div>
+      <button id="zukan-close">とじる</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="ending" hidden>
+    <div class="card">
+      <h1>ごちそうさまでした！</h1>
+      <div class="big glyph" id="ending-ch">店</div>
+      <p id="ending-text"></p>
+      <div class="row"><button id="ending-keep">もう少し遊ぶ</button><button id="ending-reset" class="sub">最初から</button></div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
