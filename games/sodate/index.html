@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>文字そだて</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <header id="top">
+      <a href="../../" class="back">← メインページへ</a>
+      <span id="fast-badge" hidden>⚡ はやおくり</span>
+      <span class="spacer"></span>
+      <button id="open-dex" class="sub small">ずかん <span id="dex-count"></span></button>
+      <button id="open-menu" class="sub small" aria-label="メニュー">☰</button>
+    </header>
+
+    <div id="stage-wrap">
+      <canvas id="stage" aria-label="育てている字"></canvas>
+      <div id="name-tag"><span id="form-ch"></span><span id="form-meta"></span></div>
+      <div id="hint" aria-live="polite"></div>
+      <div id="toast" hidden></div>
+    </div>
+
+    <div id="history" aria-label="これまでの歩み"></div>
+
+    <section id="stats">
+      <div class="stat"><span class="lab">おなか</span><div class="bar"><i id="b-hunger" class="hunger"></i></div></div>
+      <div class="stat"><span class="lab">きげん</span><div class="bar"><i id="b-mood" class="mood"></i></div></div>
+      <div class="stat"><span class="lab">元気</span><div class="bar"><i id="b-energy" class="energy"></i></div></div>
+      <div class="stat grow"><span class="lab" id="grow-lab">成長</span><div class="bar"><i id="b-grow" class="grow"></i></div><span id="grow-num"></span></div>
+    </section>
+
+    <section id="feeds" aria-label="エサ"></section>
+
+    <section id="actions">
+      <button id="play" class="act">あそぶ</button>
+      <button id="sleep" class="act">ねる</button>
+      <button id="graduate" class="act go" hidden>旅立たせる</button>
+    </section>
+  </div>
+
+  <!-- 会話 -->
+  <div id="talk" class="overlay" hidden>
+    <div class="talk-box">
+      <div id="talk-who"></div>
+      <p id="talk-text"></p>
+      <div class="talk-next">▶ タップで すすむ</div>
+    </div>
+  </div>
+
+  <!-- ずかん（進化図） -->
+  <div id="dex" class="overlay panel" hidden>
+    <div class="panel-box">
+      <header><h2>ずかん <span id="dex-count2"></span></h2><button id="dex-close" class="sub small">とじる</button></header>
+      <p class="note">見つけた字が並びます。「？」はまだ見ていない進化先で、手前のエサが分かれ道のヒント。点線の字は、ほかの字からも進化してこられる字。</p>
+      <div id="tree"></div>
+      <div id="dex-detail"></div>
+    </div>
+  </div>
+
+  <!-- メニュー -->
+  <div id="menu" class="overlay panel" hidden>
+    <div class="panel-box small">
+      <header><h2>メニュー</h2><button id="menu-close" class="sub small">とじる</button></header>
+      <div class="col">
+        <button id="m-restart" class="sub">卒業させて／育て直す</button>
+        <button id="m-wipe" class="sub danger">すべてのデータを消す</button>
+      </div>
+      <p class="note">字をそだてた記録は、このブラウザ（localStorage）にだけ保存されます。ブラウザを閉じている間も、少しだけ育ちます（最大12時間ぶん）。</p>
+      <p class="note"><a href="../../">← メインページへ</a></p>
+    </div>
+  </div>
+
+  <div id="loading"><p id="loading-text">フォントを読みこみ中…</p></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
