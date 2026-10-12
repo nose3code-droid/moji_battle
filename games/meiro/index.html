@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>文字めいろ</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="top">
+    <a class="back" href="../../">← メインページへ</a>
+    <h1>文字めいろ</h1>
+    <div id="levels" role="group" aria-label="むずかしさ"></div>
+  </header>
+
+  <section id="hud">
+    <div class="stat"><small>タイム</small><b id="time">0:00.0</b></div>
+    <div class="stat"><small>歩数</small><b id="steps">0</b></div>
+    <div class="stat wide"><small>最短 ／ あなた</small><b id="compare">最短 - 歩 ／ あなた 0歩</b></div>
+  </section>
+  <section id="info"></section>
+
+  <main id="stage"><canvas id="view"></canvas></main>
+
+  <footer id="bottom">
+    <div id="stick"><i id="knob"></i></div>
+    <div id="btns">
+      <button id="btn-hint">ヒント</button>
+      <button id="btn-again">もう一度</button>
+      <button id="btn-new">新しい迷路</button>
+      <button id="btn-char">別の字</button>
+    </div>
+  </footer>
+
+  <div id="picker" class="overlay" hidden>
+    <div class="card">
+      <h2>字をえらぶ</h2>
+      <form id="form">
+        <input id="char" type="text" maxlength="4" autocomplete="off" placeholder="1〜2文字" aria-label="字">
+        <button type="submit">この字で</button>
+      </form>
+      <div id="presets"></div>
+      <div class="row">
+        <button id="btn-random">おまかせの字</button>
+        <button id="btn-close" class="sub">とじる</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="overlay" hidden>
+    <div class="card">
+      <h2>ゴール！</h2>
+      <p id="result-body"></p>
+      <div class="row wrap">
+        <button id="r-again">もう一度（同じ迷路）</button>
+        <button id="r-new">新しい迷路</button>
+        <button id="r-char" class="sub">別の字</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
