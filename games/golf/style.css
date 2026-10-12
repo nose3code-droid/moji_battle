@@ -1,0 +1,89 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #16301f; font-family: system-ui, sans-serif; -webkit-user-select: none; user-select: none; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+[hidden] { display: none !important; }
+
+button { font-size: 16px; border: none; border-radius: 8px; padding: 8px 12px; background: #1f8a4c; color: #fff; cursor: pointer; }
+button:disabled { background: #999; }
+button.small { padding: 4px 8px; font-size: 13px; background: #eef; color: #223; }
+.row { display: flex; gap: 6px; align-items: center; }
+.row + .row, #stats { margin-top: 8px; }
+
+/* ---------- 上のバー ---------- */
+#bar {
+  position: fixed; top: 0; left: 0; right: 0; height: 38px; display: flex; align-items: center; gap: 12px;
+  padding: 0 12px; background: rgba(10,30,18,.85); color: #fff; font-size: 14px; z-index: 5;
+}
+#bar a { color: #ffd54f; text-decoration: none; font-weight: bold; white-space: nowrap; }
+#bar b { font-size: 16px; white-space: nowrap; }
+#now { margin-left: auto; font-size: 13px; color: #cfe6d6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- スコアカード ---------- */
+#card {
+  position: fixed; top: 44px; left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 12px));
+  display: grid; grid-template-columns: repeat(9, 1fr) 1.5fr; background: #fff; border: 2px solid #1d3a28;
+  border-radius: 6px; overflow: hidden; font-variant-numeric: tabular-nums; color: #1d3a28; z-index: 4;
+}
+.hc { border-right: 1px solid #aab; text-align: center; }
+.hc .no { font-size: 10px; background: #1d3a28; color: #fff; line-height: 14px; }
+.hc .par { font-size: 10px; color: #667; line-height: 13px; }
+.hc .sc { font-size: 15px; font-weight: bold; line-height: 20px; min-height: 20px; }
+.hc.cur { background: #fff3b0; }
+.hc.total { border-right: none; }
+.hc .sc.u { color: #d33; } .hc .sc.o { color: #236; }
+#info {
+  position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 4; white-space: nowrap;
+  background: rgba(10,30,18,.78); color: #fff; font-size: 13px; padding: 2px 10px; border-radius: 10px;
+}
+
+/* ---------- 自分の字（左下） ---------- */
+#me {
+  position: fixed; left: 8px; bottom: 8px; display: flex; gap: 8px; align-items: center; z-index: 4;
+  background: rgba(255,255,255,.92); border-radius: 10px; padding: 4px 8px; color: #223;
+}
+#me-ch { font-size: 30px; font-weight: bold; min-width: 1.2em; text-align: center; }
+#ff { position: fixed; right: 8px; bottom: 8px; z-index: 4; }
+#hint { position: fixed; left: 0; right: 0; bottom: 62px; text-align: center; color: #fff; font-size: 13px; pointer-events: none; text-shadow: 0 1px 3px #000; }
+#msg { position: fixed; left: 0; right: 0; top: 130px; text-align: center; color: #fff; font-size: 22px; font-weight: bold; pointer-events: none; text-shadow: 0 2px 6px #000; }
+
+/* ---------- 文字選び ---------- */
+#panel {
+  position: fixed; top: 50px; left: 12px; right: 12px; max-width: 380px; z-index: 6;
+  background: rgba(255,255,255,.95); border-radius: 12px; padding: 10px; color: #223;
+  box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+#panel .title { font-weight: bold; margin-bottom: 6px; }
+#char { width: 70px; font-size: 28px; text-align: center; border: 2px solid #888; border-radius: 8px; }
+#go { flex: 1; font-size: 20px; }
+.presets button { flex: 1; padding: 6px 0; background: #e6f2ea; color: #1d3a28; font-size: 18px; }
+#stats { font-size: 13px; line-height: 1.5; color: #333; }
+.stat-head { display: flex; justify-content: space-between; align-items: baseline; }
+.stat-head b { font-size: 15px; }
+.stat { display: flex; align-items: center; gap: 6px; }
+.stat span { width: 5.6em; flex: none; font-size: 12px; }
+.stat i { flex: 1; height: 8px; background: #e3e7ee; border-radius: 4px; overflow: hidden; }
+.stat i b { display: block; height: 100%; background: #1f8a4c; }
+.stat em { width: 2.4em; flex: none; text-align: right; font-style: normal; font-size: 12px; color: #555; }
+#me-stats .stat span { width: 4.8em; font-size: 10px; }
+#me-stats .stat { gap: 4px; line-height: 1.1; }
+#me-stats .stat i { width: 46px; flex: none; height: 6px; }
+#me-stats .stat em { display: none; }
+#best { margin-top: 6px; font-size: 12px; color: #a55; }
+.note { margin-top: 6px; font-size: 12px; color: #666; line-height: 1.5; }
+
+/* ---------- ホール終了・結果 ---------- */
+#banner, #result {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 7; text-align: center;
+  background: rgba(255,255,255,.96); border-radius: 14px; padding: 14px 20px; color: #1d3a28; box-shadow: 0 4px 18px rgba(0,0,0,.5);
+  width: min(380px, calc(100vw - 24px));
+}
+#banner-title { font-size: 26px; font-weight: bold; }
+#banner-sub { margin: 4px 0 10px; font-size: 14px; }
+#result { max-height: calc(100vh - 60px); overflow: auto; }
+#result-rank { font-size: 64px; font-weight: bold; line-height: 1; color: #1f8a4c; }
+#result-title { font-size: 20px; font-weight: bold; }
+#result-sub { font-size: 14px; margin: 4px 0 8px; }
+#result-table { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 8px; font-size: 12px; margin-bottom: 8px; text-align: left; }
+#result-best { font-size: 13px; color: #a55; margin-bottom: 8px; }
+#result .row { justify-content: center; }
+.home { display: block; margin-top: 8px; font-size: 13px; color: #2b7de9; }

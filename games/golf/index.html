@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字ゴルフ</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <header id="bar">
+    <a href="../../">← メインページへ</a>
+    <b>文字ゴルフ</b>
+    <span id="now"></span>
+  </header>
+
+  <div id="card" hidden></div>
+  <div id="info" hidden></div>
+
+  <div id="me" hidden>
+    <div id="me-ch"></div>
+    <div id="me-stats"></div>
+  </div>
+  <button id="ff" class="small" hidden>早送り ▶▶</button>
+  <div id="hint"></div>
+
+  <div id="panel">
+    <div class="title">文字をボールにして9ホール</div>
+    <div class="row">
+      <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="ボールにする文字（1〜2文字）">
+      <button id="go" disabled>読み込み中…</button>
+    </div>
+    <div class="row presets">
+      <button data-c="〇">〇</button>
+      <button data-c="O">O</button>
+      <button data-c="口">口</button>
+      <button data-c="あ">あ</button>
+      <button data-c="鬱">鬱</button>
+      <button data-c="一">一</button>
+      <button data-c="人">人</button>
+    </div>
+    <div id="stats"></div>
+    <div id="best"></div>
+    <div class="note">画面をドラッグして引っぱり、はなすと打てます（パチンコ式）。引く向きと反対へ飛び、長いほど強い。字の形でボールの性格が決まります。同じ字・同じ打ち方なら毎回同じ結果です。</div>
+  </div>
+
+  <div id="banner" hidden>
+    <div id="banner-title"></div>
+    <div id="banner-sub"></div>
+    <button id="next">次のホールへ</button>
+  </div>
+
+  <div id="result" hidden>
+    <div id="result-rank"></div>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div id="result-table"></div>
+    <div id="result-best"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="change">別の文字</button>
+    </div>
+    <a href="../../" class="home">← メインページへ</a>
+  </div>
+
+  <div id="msg"></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
