@@ -1,0 +1,69 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #3f7a3a; color: #1b2230; font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+[hidden] { display: none !important; }
+
+button { font: inherit; font-size: 16px; border: none; border-radius: 10px; padding: 10px 14px; background: #e8590c; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #999; cursor: default; }
+button.sub { background: #e3e7ee; color: #223; }
+button.small { padding: 4px 10px; font-size: 13px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row.choice { align-items: stretch; }
+.row + .row, .row + h2 { margin-top: 8px; }
+
+#back { position: fixed; top: 8px; left: 8px; z-index: 30; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.92); color: #1b2230; font-size: 13px; text-decoration: none; box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+
+/* ---------- メニュー・結果 ---------- */
+.overlay { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-start; justify-content: center; padding: 48px 12px 12px; overflow-y: auto; background: rgba(15,25,15,.55); }
+.card { width: 100%; max-width: 520px; background: #fffdf8; border-radius: 16px; padding: 16px; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
+h1 { margin: 0; font-size: 26px; letter-spacing: .1em; }
+h2 { margin: 14px 0 6px; font-size: 14px; color: #5a6070; }
+#r-title { margin-top: 0; font-size: 24px; color: #1b2230; }
+.lead { margin: 4px 0 12px; font-size: 13px; color: #5a6070; }
+#char { width: 76px; height: 64px; font-size: 32px; text-align: center; border: 2px solid #888; border-radius: 10px; flex: none; }
+#preview { flex: none; width: 64px; height: 64px; border-radius: 10px; background: #3a3d44; }
+#stats { flex: 1; font-size: 12px; }
+.stat { display: flex; align-items: center; gap: 6px; line-height: 1.5; }
+.stat span { width: 4.6em; flex: none; }
+.stat i { flex: 1; height: 7px; background: #e3e7ee; border-radius: 4px; overflow: hidden; }
+.stat i b { display: block; height: 100%; background: #e8590c; }
+.stat.g i b { background: #2b7de9; } .stat.s i b { background: #e8590c; } .stat.a i b { background: #2f9e44; } .stat.m i b { background: #7b5ea7; } .stat.k i b { background: #c92a2a; }
+.presets { flex-wrap: wrap; }
+.presets button { flex: 1; min-width: 40px; padding: 6px 0; background: #eef; color: #223; font-size: 20px; }
+.presets button.on, .choice button.on { background: #223a5e; color: #fff; }
+.choice button { flex: 1; background: #eef; color: #223; font-size: 14px; padding: 8px 4px; line-height: 1.3; }
+.choice button small { display: block; font-size: 11px; opacity: .75; }
+#trait { margin-top: 8px; font-size: 13px; color: #8a3a00; min-height: 1.4em; }
+#records, #rivals { margin-top: 10px; font-size: 13px; color: #333; line-height: 1.6; }
+#rivals b { display: inline-block; min-width: 1.6em; text-align: center; padding: 0 4px; border-radius: 6px; color: #fff; margin-right: 4px; }
+#go { width: 100%; margin-top: 12px; padding: 14px; font-size: 20px; }
+#msg { margin-top: 8px; min-height: 1.2em; font-size: 12px; color: #a33; }
+#r-sub { margin: 4px 0 8px; font-size: 14px; color: #5a6070; }
+#r-list { margin: 0; padding-left: 0; list-style: none; }
+#r-list li { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 8px; font-size: 15px; }
+#r-list li.me { background: #fff1dc; font-weight: bold; }
+#r-list li .rk { width: 1.6em; text-align: center; }
+#r-list li .ch { min-width: 2.2em; text-align: center; padding: 0 6px; border-radius: 6px; color: #fff; font-size: 18px; }
+#r-list li .tm { margin-left: auto; font-variant-numeric: tabular-nums; }
+#r-times { margin: 10px 0; font-size: 14px; line-height: 1.7; }
+#r-times .new { color: #c92a2a; font-weight: bold; }
+#result .row button { flex: 1; }
+
+/* ---------- レース中の表示 ---------- */
+#hud { position: fixed; inset: 0; z-index: 10; pointer-events: none; }
+#hud .box { position: absolute; top: 42px; left: 8px; background: rgba(0,0,0,.55); color: #fff; padding: 6px 10px; border-radius: 10px; font-size: 18px; line-height: 1.4; }
+#hud .box.times { top: 42px; left: auto; right: 8px; text-align: right; font-variant-numeric: tabular-nums; }
+#hud .box + .box.times { margin: 0; }
+#hud small { font-size: 11px; opacity: .8; margin-right: 4px; }
+#hud .box:first-child { top: 42px; }
+#board { position: absolute; top: 118px; left: 8px; margin: 0; padding: 4px 8px; list-style: none; background: rgba(0,0,0,.45); color: #fff; border-radius: 10px; font-size: 14px; line-height: 1.5; }
+#board li { display: flex; gap: 6px; align-items: center; }
+#board li b { min-width: 1.6em; text-align: center; padding: 0 3px; border-radius: 5px; font-size: 14px; }
+#board li.me { font-weight: bold; }
+#mini { position: absolute; right: 8px; bottom: 8px; width: 140px; height: 110px; background: rgba(0,0,0,.4); border-radius: 10px; }
+#quit { position: absolute; top: 140px; right: 8px; pointer-events: auto; opacity: .85; }
+#count { position: fixed; inset: 0; z-index: 12; display: grid; place-items: center; pointer-events: none; font-size: min(30vw, 200px); font-weight: 900; color: #fff; text-shadow: 0 4px 16px rgba(0,0,0,.6); }
+#hint { position: fixed; left: 0; right: 0; bottom: 144px; z-index: 11; text-align: center; font-size: 13px; color: #fff; text-shadow: 0 1px 4px #000; pointer-events: none; padding: 0 12px; }
+#brake { position: fixed; z-index: 15; left: 50%; bottom: 40px; transform: translateX(-50%); width: 92px; height: 92px; border-radius: 50%; background: rgba(200,40,40,.8); font-size: 14px; line-height: 1.3; border: 3px solid #fff; touch-action: none; }
+#brake.on { background: rgba(255,90,90,.95); }
+@media (max-width: 560px) { #hud .box { font-size: 15px; } #board { top: 108px; } #quit { top: 126px; } #mini { width: 110px; height: 86px; } #hint { padding: 0 12px; } }
