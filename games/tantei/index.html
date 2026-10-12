@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>漢字なりたち探偵</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <span id="bar-title">漢字なりたち探偵</span>
+    <div class="btns">
+      <button id="hint" hidden>ヒント</button>
+      <button id="reset" hidden>やり直し</button>
+      <button id="to-select" hidden>事件</button>
+      <button id="to-dex">図鑑</button>
+    </div>
+  </header>
+
+  <main id="app">
+    <section id="title" class="card">
+      <div class="logo"><span>漢</span><span>字</span></div>
+      <h1>漢字なりたち探偵</h1>
+      <p class="lead">「字ヶ丘」の町で、大切な「字」が次々に消える事件が起きた。<br>見習い探偵の「見」と助手の「手」が、漢字の成り立ちを手がかりに謎を解く。<br>犯人は、いったい誰…？</p>
+      <button id="start" class="main">はじめる</button>
+      <button id="continue" class="main" hidden>つづきから</button>
+      <button id="title-select" class="sub" hidden>事件をえらぶ</button>
+      <button id="title-dex" class="sub" hidden>図鑑を見る</button>
+      <button id="wipe" class="link" hidden>データを消してさいしょから</button>
+    </section>
+
+    <section id="select" class="card" hidden>
+      <h2>事件をえらぶ</h2>
+      <div id="case-grid"></div>
+    </section>
+
+    <section id="play" hidden>
+      <div id="case-head"><b id="case-title"></b><span id="case-place"></span></div>
+      <div id="suspects-wrap" class="panel"><h3>容疑者</h3><div id="suspects"></div></div>
+      <div id="qbox" class="panel"></div>
+      <div id="clues-wrap" class="panel"><h3>手がかりノート</h3><ol id="clues"></ol></div>
+    </section>
+
+    <section id="pick" class="card" hidden>
+      <h2>推理タイム</h2>
+      <p id="pick-lead">集めた手がかりから、犯人だと思う字をえらぼう。</p>
+      <div id="pick-suspects"></div>
+      <p id="pick-msg" role="status"></p>
+      <button id="pick-go" class="main" disabled>この字が犯人だ！</button>
+      <ol id="pick-clues" class="clue-list"></ol>
+    </section>
+
+    <section id="result" class="card" hidden>
+      <h2 id="res-title"></h2>
+      <div id="res-stars" class="stars"></div>
+      <p id="res-detail"></p>
+      <button id="res-next" class="main">つぎの事件へ ▶</button>
+      <button id="res-retry" class="sub">もういちど挑戦</button>
+      <button id="res-select" class="sub">事件をえらぶ</button>
+    </section>
+
+    <section id="dex" class="card" hidden>
+      <h2>漢字図鑑 <small id="dex-count"></small></h2>
+      <div id="dex-grid"></div>
+      <div id="dex-detail"></div>
+      <button id="dex-close" class="sub">もどる</button>
+    </section>
+
+    <section id="ending" class="card" hidden>
+      <div class="big">口</div>
+      <h2 id="end-title"></h2>
+      <p id="end-text"></p>
+      <div id="end-stars" class="stars"></div>
+      <button id="end-dex" class="main">図鑑を見る</button>
+      <button id="end-select" class="sub">事件をえらぶ</button>
+      <a href="../../" class="back2">← メインページへ</a>
+    </section>
+  </main>
+
+  <div id="talk" hidden>
+    <div id="talk-box">
+      <div id="talk-av"></div>
+      <div id="talk-body"><b id="talk-name"></b><p id="talk-text"></p></div>
+      <span id="talk-next">▶</span>
+    </div>
+  </div>
+  <div id="modal" hidden><div id="modal-box"><p id="modal-text"></p><div class="row"><button id="modal-ok" class="main">はい</button><button id="modal-cancel" class="sub">やめる</button></div></div></div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
