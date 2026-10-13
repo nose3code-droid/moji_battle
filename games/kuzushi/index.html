@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>文字ブロックくずし</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="bar">
+    <a href="../../">← メインページへ</a>
+    <b>文字ブロックくずし</b>
+    <button id="pause" class="icon" title="一時停止（P / Esc）" hidden>⏸</button>
+  </header>
+
+  <section id="hud" hidden>
+    <span id="stg"></span>
+    <span class="grow">SCORE <b id="score">0</b></span>
+    <span>HI <b id="hi">0</b></span>
+    <span id="lives" title="残機"></span>
+  </section>
+
+  <main id="stage">
+    <canvas id="view"></canvas>
+    <div id="hint"></div>
+    <div id="toast"></div>
+  </main>
+
+  <!-- タイトル／面セレクト -->
+  <div id="menu" class="overlay">
+    <div class="card">
+      <h1>文字ブロックくずし</h1>
+      <p class="lead">ブロックは字の形。ボールは字の輪郭で跳ね返る。「口」の穴を通り抜けて奥をねらおう。画数ぶん当てると字が砕ける。全12面。</p>
+      <div class="row">
+        <button id="cont" hidden>つづきから</button>
+        <button id="new">はじめから</button>
+      </div>
+      <h2>面セレクト</h2>
+      <div id="stages"></div>
+      <div id="record"></div>
+      <p class="note">操作：マウス／指のドラッグでパドルを動かす（矢印キー・A/D も可）。タップ・クリック・スペースでボールを発射。落ちてくる字をパドルで受けるとアイテム。<br>
+        <b>大</b>パドル大　<b>小</b>パドル小・得点×2　<b>速</b>加速・得点UP　<b>分</b>3つに分裂　<b>火</b>貫通する火の玉　<b>命</b>残機＋1</p>
+    </div>
+  </div>
+
+  <!-- クリア／ゲームオーバー／一時停止 -->
+  <div id="banner" class="overlay" hidden>
+    <div class="card">
+      <div id="banner-title"></div>
+      <div id="banner-sub"></div>
+      <div class="row">
+        <button id="b-main"></button>
+        <button id="b-sub" class="ghost"></button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
