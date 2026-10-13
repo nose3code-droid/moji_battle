@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>文字つり</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <header id="top">
+      <a href="../../" class="back">← メインページへ</a>
+      <span class="spacer"></span>
+      <button id="open-dex" class="sub small">ずかん <span id="dex-count"></span></button>
+      <button id="open-menu" class="sub small" aria-label="メニュー">☰</button>
+    </header>
+
+    <nav id="areas" aria-label="釣り場"></nav>
+
+    <div id="stage-wrap">
+      <canvas id="stage" aria-label="水中の断面図"></canvas>
+      <div id="banner" aria-live="assertive"></div>
+      <div id="hint" aria-live="polite"></div>
+      <div id="toast" hidden></div>
+    </div>
+
+    <section id="gauges">
+      <div id="power" hidden>
+        <div class="track"><i id="power-fill"></i></div>
+        <div class="scale"><span>近く・浅い</span><span>遠く・深い</span></div>
+      </div>
+      <div id="tension" hidden>
+        <div class="row"><span class="lab">テンション</span>
+          <div class="track" id="t-track"><b id="t-band"></b><i id="t-needle"></i></div></div>
+        <div class="scale"><span>ゆるい（逃げる）</span><span>帯に入れて巻く</span><span>強い（切れる）</span></div>
+        <div class="row"><span class="lab">よせた</span><div class="track thin"><i id="d-fill"></i></div></div>
+      </div>
+    </section>
+
+    <section id="actions">
+      <button id="act" class="act">長押しで 投げる</button>
+      <button id="pull" class="sub">糸を<br>あげる</button>
+    </section>
+  </div>
+
+  <!-- 会話 -->
+  <div id="talk" class="overlay" hidden>
+    <div class="talk-box">
+      <div id="talk-who"></div>
+      <p id="talk-text"></p>
+      <div class="talk-next">▶ タップで すすむ</div>
+    </div>
+  </div>
+
+  <!-- 釣れた！ -->
+  <div id="result" class="overlay" hidden>
+    <div class="res-box">
+      <div id="res-new"></div>
+      <canvas id="res-ch" width="200" height="200"></canvas>
+      <div id="res-name"></div>
+      <div id="res-size"></div>
+      <div id="res-best"></div>
+      <p id="res-note"></p>
+      <div id="res-trait"></div>
+      <div class="talk-next">▶ タップで とじる</div>
+    </div>
+  </div>
+
+  <!-- ずかん -->
+  <div id="dex" class="overlay panel" hidden>
+    <div class="panel-box">
+      <header><h2>ずかん <span id="dex-count2"></span></h2><button id="dex-close" class="sub small">とじる</button></header>
+      <div id="dex-rate"><i id="dex-rate-fill"></i></div>
+      <div id="dex-detail"></div>
+      <div id="dex-grid"></div>
+    </div>
+  </div>
+
+  <!-- メニュー -->
+  <div id="menu" class="overlay panel" hidden>
+    <div class="panel-box small">
+      <header><h2>メニュー</h2><button id="menu-close" class="sub small">とじる</button></header>
+      <div class="col">
+        <button id="m-reset" class="sub danger">最初からやり直す（記録を消す）</button>
+      </div>
+      <p class="note">釣った字・ベストサイズ・開いた釣り場は、このブラウザ（localStorage）にだけ保存されます。</p>
+      <p class="note">遊び方：ボタンを長押しして力をため、はなして投げる → ウキが沈んだらタップ → 押している間リールを巻く。</p>
+      <p class="note"><a href="../../">← メインページへ</a></p>
+    </div>
+  </div>
+
+  <div id="loading"><p id="loading-text">フォントを読みこみ中…</p></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
