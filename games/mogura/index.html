@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字もぐらたたき</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <div id="round-name"></div>
+    <button id="btn-quit" class="mini">やめる</button>
+  </header>
+  <div id="timebar"><i id="timefill"></i><span id="timetext"></span></div>
+  <div id="topic"></div>
+  <div id="stat">
+    <div>スコア <b id="score">0</b></div>
+    <div id="combo"></div>
+    <div id="life"></div>
+  </div>
+  <main id="board"></main>
+  <div id="info" class="empty">お題に合う字だけを叩こう！</div>
+
+  <div class="overlay" id="title">
+    <div class="card">
+      <h1>文字もぐらたたき</h1>
+      <p>穴から出てくる字のうち、<b>お題に合う字だけ</b>を叩こう。<br>合わない字を叩くとライフが減り、お題の字を逃がすと減点。</p>
+      <div class="row col">
+        <button id="go-all">はじめから（全10ラウンド）</button>
+        <button id="go-select" class="sub">ラウンドをえらぶ</button>
+      </div>
+      <div id="best-line"></div>
+      <p class="hint">連続で正解するとコンボで得点アップ。1ラウンド30秒、ライフ3つ。</p>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="select" hidden>
+    <div class="card">
+      <h2>ラウンドをえらぶ</h2>
+      <div id="select-grid"></div>
+      <button id="select-close" class="sub">もどる</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="intro" hidden>
+    <div class="card">
+      <div id="intro-no"></div>
+      <h2 id="intro-title"></h2>
+      <p>このお題に合う字だけ叩く！</p>
+      <div id="intro-examples"></div>
+      <button id="intro-go">スタート</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="rresult" hidden>
+    <div class="card">
+      <h2 id="rr-title"></h2>
+      <div id="rr-score"></div>
+      <div id="rr-sub"></div>
+      <div class="row" id="rr-btns"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="final" hidden>
+    <div class="card">
+      <h2>けっか発表</h2>
+      <div id="fin-rank"></div>
+      <div id="fin-total"></div>
+      <div id="fin-best"></div>
+      <div id="fin-list"></div>
+      <div class="row col">
+        <button id="fin-again">もう一度</button>
+        <button id="fin-select" class="sub">ラウンドをえらぶ</button>
+        <button id="fin-title" class="sub">タイトルへ</button>
+      </div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
