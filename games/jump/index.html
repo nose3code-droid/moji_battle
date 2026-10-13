@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字ジャンプ</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <a href="../../">← メインページへ</a>
+    <h1>文字ジャンプ</h1>
+    <button id="tilt-btn" class="sub">傾き:OFF</button>
+  </header>
+
+  <div id="wrap">
+    <canvas id="view" width="360" height="640"></canvas>
+
+    <div id="panel">
+      <div id="panel-title">文字ジャンプ</div>
+      <div id="panel-result"></div>
+      <div id="panel-msg">フォント読み込み中…</div>
+      <div class="row">
+        <input id="char" type="text" value="木" maxlength="2" autocomplete="off" aria-label="主人公の字">
+        <div id="traits"></div>
+      </div>
+      <div class="presets" id="presets"></div>
+      <div id="panel-btns">
+        <button id="start-btn" disabled>スタート</button>
+      </div>
+      <div id="records"></div>
+      <div id="how">左右タップ長押し／指でドラッグ／傾き／←→・A D で動く。ジャンプは自動。画面の端は反対側につながっている。</div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
