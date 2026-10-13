@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字バスケット</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <div id="panel">
+    <div class="head">
+      <h1>文字バスケット</h1>
+      <a href="../../">← メインページへ</a>
+    </div>
+    <div class="row">
+      <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="文字（1〜2文字）">
+      <div id="presets" class="presets">
+        <button data-c="〇">〇</button>
+        <button data-c="田">田</button>
+        <button data-c="ー">ー</button>
+        <button data-c="口">口</button>
+        <button data-c="鬱">鬱</button>
+        <button data-c="あ">あ</button>
+      </div>
+    </div>
+    <div id="stages" class="row"></div>
+    <div id="trait"></div>
+  </div>
+
+  <div id="hud">
+    <div><small>スコア</small><b id="score">0</b></div>
+    <div><small>のこり</small><b id="balls">20</b></div>
+    <div><small>ベスト</small><b id="best">―</b></div>
+  </div>
+  <div id="hint">字をドラッグして引っぱり、離すと投げる</div>
+
+  <div id="result" hidden>
+    <div id="result-ch"></div>
+    <div id="result-title"></div>
+    <div id="result-score"></div>
+    <div id="result-sub"></div>
+    <div class="row">
+      <button id="retry">もう一度</button>
+      <button id="next" class="sub">次のステージ</button>
+      <button id="change" class="sub">別の字</button>
+    </div>
+  </div>
+
+  <div id="msg"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

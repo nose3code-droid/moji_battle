@@ -1,0 +1,46 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #1b2a49; font-family: system-ui, sans-serif; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+#view { display: block; width: 100vw; height: 100vh; touch-action: none; }
+[hidden] { display: none !important; }
+
+button { font-size: 15px; border: none; border-radius: 8px; padding: 8px 12px; background: #ff8a1f; color: #fff; cursor: pointer; touch-action: manipulation; }
+button.sub { background: #e3e7ee; color: #223; }
+.row { display: flex; gap: 6px; }
+.row + .row { margin-top: 6px; }
+
+#panel {
+  position: fixed; top: 8px; left: 8px; right: 8px; max-width: 460px;
+  background: rgba(255,255,255,.93); border-radius: 12px; padding: 8px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+h1 { margin: 0; font-size: 17px; color: #123; }
+.head a { font-size: 13px; color: #1565c0; text-decoration: none; padding: 4px 0; }
+#char { width: 56px; height: 44px; font-size: 26px; text-align: center; border: 2px solid #888; border-radius: 8px; flex: none; }
+.presets { flex: 1; display: flex; gap: 4px; }
+.presets button { flex: 1; padding: 4px 0; background: #eef; color: #223; font-size: 18px; }
+.presets button.on { background: #223a5e; color: #fff; }
+#stages button { flex: 1; padding: 6px 0; white-space: nowrap; overflow: hidden; background: #eef; color: #223; font-size: 13px; }
+#stages button.on { background: #ff8a1f; color: #fff; }
+#trait { margin-top: 6px; font-size: 12px; line-height: 1.45; color: #333; }
+#trait .tag { display: inline-block; background: #fff1dc; color: #8a4b00; border-radius: 10px; padding: 0 8px; margin: 0 4px 2px 0; }
+#trait .bars { display: flex; gap: 8px; margin-top: 2px; }
+#trait .bar { flex: 1; display: flex; align-items: center; gap: 4px; }
+#trait .bar i { flex: 1; height: 6px; background: #e3e7ee; border-radius: 3px; overflow: hidden; }
+#trait .bar i b { display: block; height: 100%; background: #ff8a1f; }
+
+#hud { position: fixed; right: 8px; bottom: 8px; display: flex; gap: 6px; }
+#hud div { background: rgba(0,0,0,.45); color: #fff; border-radius: 10px; padding: 4px 10px; text-align: center; min-width: 64px; }
+#hud small { display: block; font-size: 11px; opacity: .8; }
+#hud b { font-size: 22px; }
+#hint { position: fixed; left: 10px; bottom: 12px; color: rgba(255,255,255,.8); font-size: 13px; pointer-events: none; }
+
+#result { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(92vw, 380px); text-align: center;
+  background: rgba(255,255,255,.96); border-radius: 16px; padding: 18px; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
+#result-ch { font-size: 54px; line-height: 1.1; color: #ff8a1f; }
+#result-title { font-size: 16px; color: #555; }
+#result-score { font-size: 46px; font-weight: bold; color: #123; }
+#result-sub { font-size: 14px; color: #555; min-height: 1.4em; margin-bottom: 10px; }
+#result .row { justify-content: center; flex-wrap: wrap; }
+#msg { position: fixed; left: 0; right: 0; top: 50%; text-align: center; color: #fff; font-size: 16px; pointer-events: none; }
+@media (max-width: 520px) { #stages button { font-size: 11px; padding: 6px 0; letter-spacing: -0.5px; } #hint { bottom: 80px; } }
