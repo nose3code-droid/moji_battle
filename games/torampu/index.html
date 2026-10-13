@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>部首トランプ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <div id="target-box">目標 <b id="target">30</b> 点</div>
+    <button id="btn-book" class="sub">ずかん</button>
+  </header>
+
+  <main id="table">
+    <section class="seat" id="seat-top"></section>
+    <section class="seat" id="seat-left"></section>
+    <section id="center">
+      <div id="piles">
+        <div class="pile" id="deck-pile"><div class="back"></div><small>山札 <b id="deck-n">0</b></small></div>
+        <div id="field">
+          <div id="field-char" class="glyph"></div>
+          <div id="field-cards"></div>
+          <div id="field-info"></div>
+        </div>
+        <div class="pile" id="discard-pile"><div class="back dis"></div><small>捨て札 <b id="discard-n">0</b></small></div>
+      </div>
+      <div id="log"></div>
+    </section>
+    <section class="seat" id="seat-right"></section>
+  </main>
+
+  <section id="you">
+    <div id="you-info"><b id="you-name">あなた</b> <span id="you-score">0</span>点 <span id="you-made"></span></div>
+    <div id="msg"></div>
+  </section>
+  <section id="hand"></section>
+  <footer id="actions">
+    <button id="btn-make">作る！</button>
+    <button id="btn-draw" class="sub">1枚ひく</button>
+    <button id="btn-hint" class="sub">ヒント(-3点)</button>
+  </footer>
+
+  <canvas id="fx"></canvas>
+  <div id="fly"></div>
+
+  <div class="overlay" id="title">
+    <div class="card">
+      <h1>部首トランプ</h1>
+      <p>部首と部品のカードを2〜3枚出して、<b>本物の漢字</b>を作ろう。<br>画数が得点になるよ！</p>
+      <div class="opt"><span>人数</span><div class="seg" id="opt-count"><button data-v="2" class="on">2人</button><button data-v="3">3人</button><button data-v="4">4人</button></div></div>
+      <div class="opt"><span>CPUの強さ</span><div class="seg" id="opt-level"><button data-v="easy">やさしい</button><button data-v="normal" class="on">ふつう</button><button data-v="hard">むずかしい</button></div></div>
+      <div class="opt"><span>目標点</span><div class="seg" id="opt-target"><button data-v="20">20</button><button data-v="30" class="on">30</button><button data-v="40">40</button></div></div>
+      <div class="row"><button id="btn-start">はじめる</button><button id="title-book" class="sub">ずかん</button><button id="btn-rule" class="sub">あそびかた</button></div>
+      <div id="record"></div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="rule" hidden>
+    <div class="card wide">
+      <h2>あそびかた</h2>
+      <ul class="rules">
+        <li>自分の番に、手札の<b>2枚（または3枚）</b>をえらんで「作る！」。<b>本物の漢字</b>ができたら成功！ 画数が得点になり、出したカードは場に出るよ。</li>
+        <li>失敗しても手札にもどるだけ。作れないときは「1枚ひく」で山札から1枚引いて、番をゆずろう。</li>
+        <li>先に<b>目標点</b>にとどくか、<b>手札をぜんぶ出した</b>人の勝ち。</li>
+        <li>カードはタップでえらぶ（真ん中へドラッグでもOK）。「ヒント」は作れる組み合わせを1つ光らせるけど、3点引かれる。</li>
+        <li>人↔亻、水↔氵、心↔忄は、へんの代わりに使える字もあるよ。</li>
+      </ul>
+      <h3>とくべつカード</h3>
+      <ul class="rules" id="special-rules"></ul>
+      <p class="hint">とくべつカードは1ターンに1枚、作る前に使えるよ。</p>
+      <button id="rule-close">とじる</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="result" hidden>
+    <div class="card">
+      <h2 id="result-title"></h2>
+      <div id="result-sub"></div>
+      <div id="result-scores"></div>
+      <div id="result-made"></div>
+      <div class="row"><button id="btn-again">もう一度</button><button id="btn-title" class="sub">設定にもどる</button><button id="result-book" class="sub">ずかん</button></div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="book" hidden>
+    <div class="card wide">
+      <h2>漢字ずかん <small id="book-count"></small></h2>
+      <div id="book-list"></div>
+      <button id="book-close">とじる</button>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
