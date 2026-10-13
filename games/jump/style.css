@@ -1,0 +1,38 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0c0f1c; color: #eef; font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+body { display: flex; flex-direction: column; overflow: hidden; }
+[hidden] { display: none !important; }
+
+header { display: flex; align-items: center; gap: 12px; padding: 6px 12px; background: #1b2036; }
+header a { color: #8fc1ff; font-size: 14px; text-decoration: none; white-space: nowrap; }
+header h1 { flex: 1; margin: 0; font-size: 18px; text-align: center; color: #ffe14d; }
+
+button { font: inherit; font-size: 16px; border: none; border-radius: 8px; padding: 10px 16px; background: #e8a90c; color: #221; font-weight: bold; cursor: pointer; touch-action: manipulation; }
+button.sub { background: #3a4266; color: #eef; font-weight: normal; padding: 6px 10px; font-size: 13px; }
+button:disabled { background: #444; color: #888; cursor: default; }
+
+#wrap { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; }
+#view { display: block; background: #223; touch-action: none; user-select: none; }
+
+#panel {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(380px, calc(100% - 24px)); max-height: calc(100% - 16px); overflow-y: auto;
+  padding: 14px 16px 16px; text-align: center;
+  background: rgba(14, 18, 36, .94); border: 2px solid #ffe14d; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,.6);
+}
+#panel-title { font-size: 24px; font-weight: bold; color: #ffe14d; }
+#panel-result { font-size: 34px; font-weight: bold; color: #fff; min-height: 1em; margin: 4px 0; }
+#panel-result small { display: block; font-size: 13px; font-weight: normal; color: #9fd; }
+#panel-msg { font-size: 13px; color: #fb8; min-height: 1.2em; }
+.row { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 6px 0; }
+#char { width: 74px; font-size: 38px; text-align: center; padding: 2px; border-radius: 8px; border: 2px solid #8fc1ff; background: #0c1020; color: #fff; }
+#traits { font-size: 12px; line-height: 1.5; text-align: left; color: #cdd; }
+.presets { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 6px 0; }
+.presets button { padding: 4px 0; width: 40px; font-size: 20px; background: #2a3358; color: #eef; font-weight: normal; }
+#panel-btns { margin: 10px 0 6px; }
+#panel-btns button { width: 100%; font-size: 20px; }
+#records { font-size: 12px; line-height: 1.7; color: #bcd; text-align: left; }
+#records b { color: #ffe14d; }
+#records .chars { letter-spacing: 3px; font-size: 15px; color: #fff; }
+#how { margin-top: 6px; font-size: 11px; color: #89a; }
+@media (max-height: 560px) { #how, #records { display: none; } }
