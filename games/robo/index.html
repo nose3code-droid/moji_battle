@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>文字ロボ工房</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- 組み立て画面 -->
+  <section id="shop" class="screen" hidden>
+    <header class="top">
+      <a class="back" href="../../">← メインページへ</a>
+      <div class="top-btns">
+        <button id="zukan-btn" class="sub small">部品図鑑</button>
+        <button id="reset-btn" class="sub small">最初から</button>
+      </div>
+    </header>
+    <h1>文字ロボ工房</h1>
+    <div class="namebar"><span id="robo-name"></span><button id="rename" class="sub small">名前を変える</button></div>
+    <div class="stage">
+      <canvas id="preview" aria-label="ロボのプレビュー"></canvas>
+      <div id="radar"></div>
+    </div>
+    <div id="summary" class="note"></div>
+    <div id="slots" class="slots"></div>
+    <div class="row hint-row">
+      <button id="auto" class="sub small">おまかせ組み立て</button>
+      <button id="clear" class="sub small">ぜんぶ外す</button>
+    </div>
+    <p class="note">下の部品カードを、上の枠へ ドラッグ（またはカードをタップ → 枠をタップ）。◎○は 枠との相性で、◎だと 性能が最大 +30%</p>
+    <div id="hand" class="hand"></div>
+    <div id="next" class="next"></div>
+  </section>
+
+  <!-- バトル -->
+  <section id="battle" class="screen" hidden>
+    <div class="bars">
+      <div class="bar"><span id="p-name"></span><div class="hp"><i id="p-hp"></i></div><span id="p-hpnum"></span><div class="gauge"><i id="p-gauge"></i></div></div>
+      <div class="bar enemy"><span id="e-name"></span><div class="hp"><i id="e-hp"></i></div><span id="e-hpnum"></span><div class="gauge"><i id="e-gauge"></i></div></div>
+    </div>
+    <canvas id="arena" aria-label="バトル"></canvas>
+    <div id="log" aria-live="polite"></div>
+    <div class="row">
+      <button id="speed" class="sub">はやおくり ×1</button>
+      <button id="skip" class="sub">スキップ</button>
+    </div>
+  </section>
+
+  <!-- 会話 -->
+  <div id="talk" class="overlay talk" hidden>
+    <div class="talk-box">
+      <canvas id="talk-face" width="64" height="64"></canvas>
+      <div><b id="talk-who"></b><p id="talk-text"></p></div>
+      <span class="tap">▼ タップ</span>
+    </div>
+  </div>
+
+  <!-- 名前入力 -->
+  <div id="namebox" class="overlay" hidden>
+    <div class="box">
+      <h2>ロボに 名前を つけよう</h2>
+      <input id="name-input" type="text" maxlength="8" value="" placeholder="なまえ（8文字まで）" autocomplete="off">
+      <div class="row"><button id="name-ok">けってい</button></div>
+    </div>
+  </div>
+
+  <!-- 勝敗・報酬 -->
+  <div id="result" class="overlay" hidden>
+    <div class="box wide">
+      <div id="result-title"></div>
+      <div id="result-sub" class="note"></div>
+      <div id="rewards" class="rewards"></div>
+      <div class="row"><button id="result-ok">つぎへ</button></div>
+    </div>
+  </div>
+
+  <!-- 図鑑 -->
+  <div id="zukan" class="overlay" hidden>
+    <div class="box wide scroll">
+      <h2>部品図鑑 <small id="zukan-count"></small></h2>
+      <div id="zukan-grid" class="zgrid"></div>
+      <div id="zukan-detail" class="zdetail"></div>
+      <div class="row"><button id="zukan-close" class="sub">とじる</button></div>
+    </div>
+  </div>
+
+  <!-- ゲームクリア -->
+  <div id="ending" class="overlay" hidden>
+    <div class="box wide">
+      <div class="win big-title">ゲームクリア！</div>
+      <canvas id="ending-robo" aria-label="あなたのロボ"></canvas>
+      <p id="ending-text" class="note"></p>
+      <div class="row"><button id="ending-ok">工房へ もどる</button></div>
+    </div>
+  </div>
+
+  <div id="loading" class="overlay"><div class="box">読みこみ中…</div></div>
+  <div id="ghost" hidden></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
