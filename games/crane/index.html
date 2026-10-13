@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字クレーンゲーム</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "rapier": "https://cdn.jsdelivr.net/npm/@dimforge/rapier2d-deterministic-compat@0.21.0/dist/rapier.mjs",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="top">
+    <a href="../../" class="back">← メインページへ</a>
+    <div id="stats">
+      <span id="stage-name"></span>
+      <span>チャンス <b id="chances">―</b></span>
+      <span>得点 <b id="score">0</b></span>
+    </div>
+    <button id="open-zukan" type="button">図鑑</button>
+  </header>
+
+  <div id="stagebox"><canvas id="view"></canvas><div id="toast"></div></div>
+
+  <section id="info" aria-live="polite">
+    <div id="info-ch" class="glyph">？</div>
+    <div id="info-body">
+      <div id="info-title">字をタップ、またはアームを重ねると性格が出ます</div>
+      <div id="info-bars"></div>
+    </div>
+  </section>
+
+  <div id="pad">
+    <button id="left" type="button" aria-label="左へ">◀</button>
+    <button id="drop" type="button">おろす</button>
+    <button id="right" type="button" aria-label="右へ">▶</button>
+  </div>
+
+  <div id="title" class="card">
+    <h1>文字クレーンゲーム</h1>
+    <p>アームを動かして、字をつかんで取り出し口へ運ぼう。<br>1プレイは<b>3回のチャンス</b>。取った字の<b>画数が得点</b>です。</p>
+    <p class="hint">←→（ボタン長押し）でアームを動かし、スペース／「おろす」で降下。<br>丸い字はつるっと逃げ、角ばった字は爪が引っかかる。穴のある字は、真ん中のピンを穴に通すと吊り上げられる。</p>
+    <div id="stages"></div>
+    <button id="start" type="button" disabled>読み込み中…</button>
+  </div>
+
+  <div id="result" class="card" hidden>
+    <div id="result-title"></div>
+    <div id="result-sub"></div>
+    <div id="result-got"></div>
+    <div class="row">
+      <button id="retry" type="button">もう一度</button>
+      <button id="to-title" type="button">ステージ選択</button>
+      <button id="result-zukan" type="button">図鑑</button>
+    </div>
+  </div>
+
+  <div id="zukan" class="card" hidden>
+    <div class="zhead"><h2>図鑑</h2><span id="zcount"></span><button id="zclose" type="button">とじる</button></div>
+    <div id="zgrid"></div>
+    <div id="zdetail"></div>
+  </div>
+
+  <div id="msg"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
