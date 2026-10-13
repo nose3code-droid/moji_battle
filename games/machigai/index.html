@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>まちがい字さがし</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <div id="mode-name"></div>
+    <div id="stat"></div>
+  </header>
+  <main id="wrap"><canvas id="view"></canvas></main>
+  <div id="tipbar"></div>
+  <footer id="tools">
+    <button id="btn-hint">ヒント（−50点）</button>
+    <button id="btn-book">ずかん</button>
+    <button id="btn-quit">やめる</button>
+  </footer>
+
+  <div class="overlay" id="title">
+    <div class="card">
+      <h1>まちがい字さがし</h1>
+      <p>同じ字がずらりと並んだ中に、<b>形のよく似た字</b>が1つだけまぎれている。<br>見つけてタップしよう！</p>
+      <div class="row col">
+        <button id="go-ta">タイムアタック<small id="best-ta"></small></button>
+        <button id="go-stage">ステージ（全20面）<small id="stars-total"></small></button>
+        <button id="go-book" class="sub">ずかん</button>
+      </div>
+      <p class="hint">タイムアタック：60秒。見つけると+3秒、まちがえると−5秒。<br>ステージ：1面に3問。ミスが少ないほど星が多い。</p>
+      <div id="load-state">読み込み中…</div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="stages" hidden>
+    <div class="card">
+      <h2>ステージをえらぶ</h2>
+      <div id="stage-grid"></div>
+      <button id="stages-close" class="sub">もどる</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="result" hidden>
+    <div class="card">
+      <h2 id="result-title"></h2>
+      <div id="result-stars"></div>
+      <div id="result-sub"></div>
+      <div class="row">
+        <button id="result-next">つぎの面へ</button>
+        <button id="result-retry">もう一度</button>
+        <button id="result-title-btn" class="sub">タイトルへ</button>
+      </div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="book" hidden>
+    <div class="card wide">
+      <h2>ずかん <small id="book-count"></small></h2>
+      <div id="book-list"></div>
+      <button id="book-close">とじる</button>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
