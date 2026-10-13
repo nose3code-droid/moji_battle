@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+  <title>今日の一字</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="app">
+    <header id="top">
+      <a href="../../" class="back">← メインページへ</a>
+      <span class="spacer"></span>
+      <span id="date-label"></span>
+    </header>
+    <h1>今日の<ruby>一字<rt>いちじ</rt></ruby></h1>
+
+    <nav id="tabs">
+      <button data-tab="draw" class="on">引く</button>
+      <button data-tab="dex">図鑑</button>
+      <button data-tab="cal">こよみ</button>
+    </nav>
+
+    <!-- 引く -->
+    <section id="tab-draw">
+      <div id="streak" hidden></div>
+      <div id="shrine">
+        <label id="wish-wrap">好きな言葉（名前など・なくてもOK。保存しません）
+          <input id="wish" maxlength="20" autocomplete="off" placeholder="例：さくら">
+        </label>
+        <div id="tube-area" aria-label="おみくじの筒">
+          <div id="stick"><span id="stick-no"></span></div>
+          <div id="tube">
+            <svg viewBox="0 0 120 150" width="120" height="150" aria-hidden="true">
+              <rect x="20" y="10" width="80" height="130" rx="10" fill="#c8451f"/>
+              <rect x="20" y="10" width="80" height="14" rx="6" fill="#8d2a10"/>
+              <rect x="20" y="126" width="80" height="14" rx="6" fill="#8d2a10"/>
+              <rect x="38" y="42" width="44" height="76" rx="4" fill="#f4ecd8"/>
+              <text x="60" y="96" text-anchor="middle" font-size="40" font-weight="900" fill="#2a2420" font-family="serif">籤</text>
+            </svg>
+          </div>
+        </div>
+        <p id="draw-hint">筒をドラッグしてふる・スマホをふる・ボタンをおす</p>
+        <button id="btn-draw" class="main">おみくじをひく</button>
+      </div>
+
+      <article id="result" hidden>
+        <div class="scroll">
+          <div class="no" id="r-no"></div>
+          <canvas id="r-canvas" width="480" height="480" aria-label="今日の一字"></canvas>
+          <div class="fortune" id="r-fortune"></div>
+          <div class="rank-note" id="r-note"></div>
+          <div class="info">
+            <div class="row"><b>読み</b><span id="r-yomi"></span></div>
+            <div class="row"><b>画数</b><span id="r-strokes"></span></div>
+            <div class="row"><b>意味</b><span id="r-imi"></span></div>
+          </div>
+          <p class="word" id="r-word"></p>
+          <div class="lucky">
+            <div><b>ラッキーアイテム</b><span id="r-item"></span></div>
+            <div><b>ラッキーカラー</b><span id="r-color"><i id="r-swatch"></i><em id="r-cname"></em></span></div>
+          </div>
+          <div id="r-practice" class="practice" hidden>※ 練習で引いた字です（きろくには残りません）</div>
+        </div>
+        <div class="btns">
+          <button id="btn-save">画像でほぞん</button>
+          <button id="btn-again" class="sub">別の字を引く（練習）</button>
+          <button id="btn-back" class="sub">もどる</button>
+        </div>
+      </article>
+      <p id="font-warn" class="note" hidden></p>
+    </section>
+
+    <!-- 図鑑 -->
+    <section id="tab-dex" hidden>
+      <p class="note" id="dex-count"></p>
+      <div id="dex-grid"></div>
+    </section>
+
+    <!-- こよみ -->
+    <section id="tab-cal" hidden>
+      <div id="cal-nav">
+        <button id="cal-prev" class="sub small" aria-label="前の月">◀</button>
+        <span id="cal-title"></span>
+        <button id="cal-next" class="sub small" aria-label="次の月">▶</button>
+      </div>
+      <div id="cal-grid"></div>
+    </section>
+
+    <div id="detail" class="overlay" hidden>
+      <div class="detail-box">
+        <div id="detail-body"></div>
+        <button id="detail-close" class="sub">とじる</button>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
