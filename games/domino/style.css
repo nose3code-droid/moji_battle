@@ -1,0 +1,87 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #dff0fb; font-family: system-ui, "Hiragino Sans", "Noto Sans JP", sans-serif; color: #223; -webkit-user-select: none; user-select: none; }
+#view { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; touch-action: none; }
+button { font: inherit; font-size: 15px; border: none; border-radius: 10px; padding: 8px 12px; background: #2b7de9; color: #fff; cursor: pointer; touch-action: manipulation; }
+button:disabled { background: #9aa; cursor: default; }
+[hidden] { display: none !important; }
+.row { display: flex; gap: 6px; }
+.g { font-family: 'MojiDomino', "Noto Sans JP", system-ui, sans-serif; }
+
+#bar {
+  position: fixed; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  background: rgba(255,255,255,.88); box-shadow: 0 1px 6px rgba(0,0,0,.15); flex-wrap: wrap;
+}
+#bar .back { font-size: 13px; color: #2b7de9; text-decoration: none; white-space: nowrap; font-weight: bold; }
+#lv-name { flex: 1; font-weight: bold; font-size: 15px; min-width: 6em; }
+#bar .btns { display: flex; gap: 5px; }
+#bar .btns button { padding: 6px 10px; font-size: 13px; background: #536; }
+#bar #hint { background: #f08c00; }
+#bar #sound { background: #e8f0fb; color: #223; }
+#bar #sound.off { opacity: .45; }
+
+#banner {
+  position: fixed; top: 54px; left: 50%; transform: translateX(-50%); padding: 5px 16px; border-radius: 999px; max-width: calc(100vw - 20px);
+  font-size: 15px; font-weight: bold; color: #fff; background: #e8590c; box-shadow: 0 2px 6px rgba(0,0,0,.2); pointer-events: none; text-align: center;
+}
+#banner:empty { display: none; }
+#banner.warn { background: #c92a2a; }
+
+#dock {
+  position: fixed; left: 0; right: 0; bottom: 0; padding: 6px 8px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.93); box-shadow: 0 -2px 8px rgba(0,0,0,.15);
+}
+#card-info { min-height: 2.6em; font-size: 12.5px; line-height: 1.4; padding: 0 4px 5px; color: #334; }
+#card-info b { font-size: 15px; }
+#tray-row { display: flex; gap: 8px; align-items: stretch; }
+#tray { flex: 1; display: flex; gap: 6px; overflow-x: auto; padding: 2px; -webkit-overflow-scrolling: touch; }
+.card-btn {
+  flex: 0 0 auto; width: 76px; padding: 4px 2px 3px; border-radius: 12px; background: #fff3e6; color: #3a2210; border: 3px solid #f2d3b3;
+  display: flex; flex-direction: column; align-items: center; line-height: 1.15; touch-action: pan-x;   /* 横になぞるとトレイが動き、上へなぞると札を持ち上げる */
+}
+.card-btn .g { font-size: 36px; line-height: 40px; height: 40px; }
+.card-btn .tag { font-size: 10.5px; font-weight: bold; padding: 1px 6px; border-radius: 999px; color: #fff; margin-top: 1px; }
+.card-btn .st { font-size: 9px; color: #654; margin-top: 2px; white-space: nowrap; letter-spacing: -.2px; }
+.card-btn.on { border-color: #e8590c; background: #ffe0c2; }
+.card-btn.used { opacity: .35; }
+.card-btn.tool { background: #e7f5ff; border-color: #a5d8ff; }
+.card-btn.tool.on { border-color: #1971c2; background: #d0ebff; }
+#go { flex: 0 0 auto; min-width: 84px; font-size: 18px; font-weight: bold; background: #e8590c; border-radius: 12px; }
+#go.stop { background: #495057; }
+#drag-ghost { position: fixed; z-index: 20; pointer-events: none; transform: translate(-50%, -60%); font-size: 54px; opacity: .85; color: #e8590c; text-shadow: 0 2px 6px rgba(0,0,0,.3); }
+
+.card {
+  position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 10;
+  width: min(420px, calc(100vw - 24px)); max-height: calc(100vh - 20px); overflow-y: auto; padding: 16px; text-align: center;
+  background: rgba(255,255,255,.97); border-radius: 16px; box-shadow: 0 4px 18px rgba(0,0,0,.3);
+}
+#select h1 { margin: 0 0 6px; font-size: 26px; }
+#select p { margin: 6px 0 10px; font-size: 13px; line-height: 1.6; color: #445; }
+#grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+#grid button { padding: 6px 2px; background: #eef3fb; color: #223; border-radius: 10px; font-size: 12px; line-height: 1.25; }
+#grid button b { display: block; font-size: 19px; }
+#grid button .s { display: block; font-size: 11px; color: #e8a400; letter-spacing: 1px; }
+#grid button:disabled { background: #e1e4e8; color: #999; }
+#grid button.done { background: #e6fcf5; }
+#total { margin: 10px 0 2px; font-size: 13px; color: #445; }
+.back2 { display: inline-block; margin-top: 6px; font-size: 13px; color: #2b7de9; }
+#result-title { font-size: 26px; font-weight: bold; }
+#stars { font-size: 44px; letter-spacing: 6px; color: #f5b301; margin: 4px 0; }
+#stars .off { color: #ccd; }
+#result-sub { margin: 4px 0 12px; font-size: 14px; line-height: 1.6; color: #445; }
+#result .row button { flex: 1; padding: 10px 4px; font-size: 14px; }
+#to-select { background: #536; }
+#again { background: #868e96; }
+
+#msg {
+  position: fixed; left: 50%; top: 42%; transform: translate(-50%, -50%); z-index: 12; background: rgba(0,0,0,.72); color: #fff;
+  padding: 8px 16px; border-radius: 999px; font-size: 15px; pointer-events: none; max-width: calc(100vw - 24px); text-align: center;
+}
+#msg:empty { display: none; }
+
+@media (max-width: 520px) {
+  #lv-name { order: 3; flex-basis: 100%; font-size: 14px; }
+  #banner { top: 78px; font-size: 14px; }
+  .card-btn { width: 68px; }
+  .card-btn .g { font-size: 32px; }
+  #go { min-width: 70px; font-size: 16px; }
+}
