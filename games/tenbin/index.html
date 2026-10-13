@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字てんびん</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="bar">
+    <a class="back" href="../../">← メインページへ</a>
+    <div id="stage-name"></div>
+    <div id="count-box">使った <b id="used">0</b> 枚</div>
+  </header>
+  <div id="rule"></div>
+  <main id="stage">
+    <canvas id="scale"></canvas>
+    <div id="pans"></div>
+  </main>
+  <div id="info"></div>
+  <section id="hand"></section>
+  <footer id="tools">
+    <button id="btn-hint">ヒント</button>
+    <button id="btn-reset">やり直し</button>
+    <button id="btn-select">面セレクト</button>
+  </footer>
+  <div id="toast"></div>
+
+  <div class="overlay" id="title">
+    <div class="card">
+      <h1>文字てんびん</h1>
+      <p>字の重さは<b>画数</b>。字をドラッグしてお皿にのせ、<br>てんびんをつり合わせよう。</p>
+      <p class="hint">字をタップすると、かるいお皿にのるよ。皿の字をタップすると手元にもどる。</p>
+      <div id="stage-grid"></div>
+      <div class="row"><button id="title-close" hidden>ゲームにもどる</button><span id="load-state"></span></div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="result" hidden>
+    <div class="card">
+      <h2 id="result-title"></h2>
+      <div id="result-stars"></div>
+      <div id="result-sub"></div>
+      <div id="result-fact"></div>
+      <div class="row">
+        <button id="result-next">つぎの面へ</button>
+        <button id="result-retry">もう一度</button>
+        <button id="result-select">面セレクト</button>
+      </div>
+      <a class="back" href="../../">← メインページへ</a>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
