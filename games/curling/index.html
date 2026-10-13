@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>文字カーリング</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="bar">
+    <a href="../../">← メインページへ</a>
+    <b>文字カーリング</b>
+    <span id="status"></span>
+  </header>
+
+  <section id="hud" hidden>
+    <table id="sb"></table>
+    <div id="mine"></div>
+  </section>
+
+  <main id="stage">
+    <canvas id="view"></canvas>
+    <div id="hint"></div>
+    <div id="toast"></div>
+  </main>
+
+  <footer id="controls" hidden>
+    <button id="spin" class="small" title="回転の向き（曲がる向きが変わります）">回転 ↻ 右</button>
+    <button id="speed" class="small">速さ ×2</button>
+    <button id="sweep">スイープ<small>（押し続ける／スペース）</small></button>
+  </footer>
+
+  <!-- 文字えらび -->
+  <div id="select" class="overlay">
+    <div class="card">
+      <h1>文字カーリング</h1>
+      <p class="lead">字をストーンにして氷の上を滑らせ、ハウスの中心に近づけよう。1エンド3投ずつ、全4エンド。</p>
+      <div class="row">
+        <input id="char" type="text" value="〇" maxlength="2" autocomplete="off" aria-label="ストーンにする文字（1〜2文字）">
+        <button id="go" disabled>読み込み中…</button>
+      </div>
+      <div class="row presets" id="presets"></div>
+      <div id="stats"></div>
+      <div class="row levels" id="levels"></div>
+      <div id="record"></div>
+      <p class="note">引っぱって離すと投げられます（パチンコ式）。滑っている間は「スイープ」を押し続けると摩擦が減り、遠くまでまっすぐ進みます。字の形でストーンの性格が決まります。</p>
+    </div>
+  </div>
+
+  <!-- エンドの結果／最終結果 -->
+  <div id="banner" class="overlay" hidden>
+    <div class="card">
+      <div id="banner-title"></div>
+      <div id="banner-sub"></div>
+      <div class="row">
+        <button id="next">次のエンドへ</button>
+        <button id="again" hidden>もう一度</button>
+        <button id="change" hidden>文字を変える</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
