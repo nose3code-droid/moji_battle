@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>字のジグソー</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "opentype": "https://cdn.jsdelivr.net/npm/opentype.js@2.0.0/dist/opentype.mjs"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header id="top">
+    <a class="back" href="../../">← メインページへ</a>
+    <h1>字のジグソー</h1>
+    <div id="levels" role="group" aria-label="むずかしさ"></div>
+  </header>
+
+  <section id="hud">
+    <div class="stat"><small>タイム</small><b id="time">0:00.0</b></div>
+    <div class="stat"><small>手数</small><b id="moves">0</b></div>
+    <div class="stat"><small>ピース</small><b id="count">0/0</b></div>
+    <div class="stat wide"><small>ベスト</small><b id="best">-</b></div>
+  </section>
+  <section id="info"></section>
+
+  <main id="stage"><canvas id="view"></canvas></main>
+
+  <footer id="bottom">
+    <div id="btns">
+      <button id="btn-hint">ヒント</button>
+      <button id="btn-ghost" aria-pressed="true">枠を見る</button>
+      <button id="btn-sort">整列</button>
+      <button id="btn-again">もう一度</button>
+      <button id="btn-auto">おまかせ</button>
+      <button id="btn-char">別の字</button>
+      <button id="btn-sound" class="sub" aria-pressed="true">音 ON</button>
+    </div>
+  </footer>
+
+  <div id="picker" class="overlay" hidden>
+    <div class="card">
+      <h2>字をえらぶ</h2>
+      <form id="form">
+        <input id="char" type="text" maxlength="2" autocomplete="off" placeholder="1文字" aria-label="字">
+        <button type="submit">この字で</button>
+      </form>
+      <div id="presets"></div>
+      <div class="row">
+        <button id="btn-random">ランダム</button>
+        <button id="btn-close" class="sub">とじる</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="overlay" hidden>
+    <div class="card">
+      <div id="r-char"></div>
+      <h2>できあがり！</h2>
+      <p id="result-body"></p>
+      <div class="row wrap">
+        <button id="r-next">次の字へ</button>
+        <button id="r-again" class="sub">もう一度</button>
+        <button id="r-char-btn" class="sub">別の字</button>
+        <button id="r-view" class="sub">字を見る</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
